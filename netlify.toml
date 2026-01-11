@@ -1,0 +1,16 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[context.production.environment]
+  VITE_API_BASE_URL = "https://api.example.com/api/"
+
+[context.deploy-preview.environment]
+  VITE_API_BASE_URL = "https://staging-api.example.com/api/"
+
+[context.branch-deploy.environment]
+  VITE_API_BASE_URL = "http://localhost:11111/api/"  # useful for branch-specific preview builds
+
+# Note: Vite embeds VITE_* env vars at build time. Changing values in Netlify UI or netlify.toml
+# triggers a new deploy that will include the updated values. If you need runtime-swappable
+# configuration (no redeploy), consider serving a small public config file and reading it on app start.
