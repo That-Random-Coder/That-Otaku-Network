@@ -22,7 +22,7 @@ const QRCodeShareModal = ({ isOpen, onClose, accent, motionSafe, targetId, targe
     const cookieUserId = getCookie('userId') || getCookie('id')
     const effectiveId = targetId || cookieUserId
     const basePath = targetType === 'group' ? '/group/' : '/friend-profile/'
-    const url = `http://localhost:5173${basePath}${encodeURIComponent(effectiveId || '')}`
+    const url = `https://thatotakunetwork.netlify.app${basePath}${encodeURIComponent(effectiveId || '')}`
 
     const color = accent?.mid || '#7c3aed'
 

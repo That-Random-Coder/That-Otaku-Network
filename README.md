@@ -110,13 +110,7 @@ Steps:
    npm run dev
    ```
 
-5. Open http://localhost:5173 (or the URL Vite prints) and explore.
-
----
-
-## 📦 Build & preview
-
-- Build:
+   5. Open https://thatotakunetwork.netlify.app (or the URL Vite prints) and explore.
 
   ```bash
   npm run build
@@ -136,6 +130,28 @@ This is a static frontend. Recommended hosts:
 
 - Vercel: connect the repo, set the `VITE_API_BASE_URL` environment variable, build command `npm run build`, and output directory `dist`.
 - Netlify: same as above—set env var in the site settings and deploy.
+
+  Quick Netlify steps:
+  1. In Netlify, open your Site → Site settings → Build & deploy → Environment and add `VITE_API_BASE_URL` (e.g. `https://api.example.com/api/`).
+  2. Save and trigger a deploy (Vite reads env vars at build time).
+  3. To use different values for production vs PR previews, set variables per context in the Netlify UI, or add a `netlify.toml` to the repo (example below).
+
+  Example `netlify.toml` (optional):
+
+  ```toml
+  [build]
+    command = "npm run build"
+    publish = "dist"
+
+  [context.production.environment]
+    VITE_API_BASE_URL = "https://api.example.com/api/"
+
+  [context.deploy-preview.environment]
+    VITE_API_BASE_URL = "https://staging-api.example.com/api/"
+  ```
+
+  Note: Vite embeds `VITE_*` env vars at build time—changing `VITE_API_BASE_URL` requires a redeploy to take effect. If you need a runtime-configurable backend without rebuilding, consider fetching a small `config.json` from the server at app startup or using a script that loads values from a public file.
+
 - GitHub Pages: build locally and publish the `dist/` folder (or use an action to build and push to `gh-pages`).
 
 CORS and auth: make sure your backend allows requests from your frontend origin and accepts Authorization header tokens. The frontend sends the token as an `Authorization: Bearer <token>` header.

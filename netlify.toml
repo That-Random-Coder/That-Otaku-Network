@@ -3,13 +3,13 @@
   publish = "dist"
 
 [context.production.environment]
-  VITE_API_BASE_URL = "https://api.example.com/api/"
+  VITE_API_BASE_URL = "https://kitty-james-cattle-renew.trycloudflare.com/api/"
 
 [context.deploy-preview.environment]
-  VITE_API_BASE_URL = "https://staging-api.example.com/api/"
+  VITE_API_BASE_URL = "https://kitty-james-cattle-renew.trycloudflare.com/api/"
 
 [context.branch-deploy.environment]
-  VITE_API_BASE_URL = "http://localhost:11111/api/"  # useful for branch-specific preview builds
+  VITE_API_BASE_URL = "https://kitty-james-cattle-renew.trycloudflare.com/api/"  # useful for branch-specific preview builds
 
 # Note: Vite embeds VITE_* env vars at build time. Changing values in Netlify UI or netlify.toml
 # triggers a new deploy that will include the updated values. If you need runtime-swappable
