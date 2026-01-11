@@ -29,6 +29,52 @@ Built to be straightforward to run locally and deploy to modern static hosts (Ve
 
 ---
 
+## 🧩 Backend (server)
+
+The backend (server) is expected to expose a RESTful API under the base URL configured by `VITE_API_BASE_URL` (for local development the default used in examples is `http://localhost:11111/api/`).
+
+Key expectations & guidance:
+
+- Common endpoints (examples): `/auth/*`, `/users/*`, `/posts/*`, `/groups/*`, `/media/*`.
+- Authentication: backend should accept `Authorization: Bearer <token>` and/or an `AccessToken` cookie. The frontend prefers Authorization-only media fetches to avoid large cookie headers (prevents `431 Request Header Fields Too Large`).
+- CORS: allow the frontend origin and permit the `Authorization` and `Content-Type` headers. For protected media, allow `Authorization` on media endpoints or provide signed URLs.
+- Media handling: prefer serving media via authenticated endpoints that accept the `Authorization` header or returning pre-signed URLs so the frontend can fetch without sending cookies.
+
+Local server & developer tasks (examples — adjust to your stack):
+
+- Run server locally (Node/Express example):
+
+For frontend :
+```bash
+npm ci
+npm run dev
+```
+
+For backend :
+```bash
+cd backend
+
+# Using DOCKER
+
+docker compose -f dockerCompose.yml up -d
+```
+
+- Typical environment variables to set:
+  - `PORT` (e.g. `11111`)
+  - `DATABASE_URL` (DB connection string)
+  - `JWT_SECRET` or other auth secrets
+  - `MEDIA_STORAGE_*` (S3 credentials or local media path)
+
+- Migrations & seeds: run your migration tool (e.g. `prisma migrate dev`, `npm run migrate`, `alembic upgrade head`, or similar).
+
+Testing & CI:
+
+- Add unit and integration tests for API endpoints. Provide a script (e.g. `npm test`) and consider a GitHub Action that runs the tests and builds both backend and frontend on PRs.
+
+If you have a separate backend repository or a preferred stack, tell me where it lives and I can add a tailored subsection with exact run commands and environment examples.
+
+---
+
 ## 🛠 Local development
 
 Prerequisites:
