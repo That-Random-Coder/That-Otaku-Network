@@ -8,7 +8,7 @@ const apiClient = axios.create({
   },
 })
 
-// Helper to read and write cookies locally
+
 const getCookie = (name) => {
   if (typeof document === 'undefined') return ''
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
@@ -22,8 +22,8 @@ const setCookie = (name, value, maxAgeSeconds) => {
   document.cookie = parts.join('; ')
 }
 
-// IST offset (UTC+5:30) in milliseconds
-const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000 // 19,800,000
+
+const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000
 let isRefreshing = false
 let refreshPromise = null
 
@@ -52,12 +52,12 @@ const refreshAccessToken = async () => {
       const token = res?.data?.token || res?.data?.accessToken || ''
       const expireAt = res?.data?.expireAt || res?.data?.expiresAt || res?.data?.timestamp || ''
 
-      // Normalize expireAt into milliseconds-since-epoch when possible
+
       let expireMs = null
       if (expireAt) {
         if (typeof expireAt === 'number') {
           expireMs = Number(expireAt)
-          if (expireMs < 1e12) expireMs = expireMs * 1000 // likely seconds -> convert to ms
+          if (expireMs < 1e12) expireMs = expireMs * 1000
         } else {
           const asNum = Number(expireAt)
           if (!Number.isNaN(asNum)) {
@@ -75,20 +75,20 @@ const refreshAccessToken = async () => {
         throw new Error('Token refresh returned no token')
       }
 
-      // Save AccessToken and TimeStampAccessToken (ms since epoch where possible)
+
       setCookie('AccessToken', token, 7 * 24 * 3600)
       try { localStorage.setItem('AccessToken', String(token)) } catch {}
       console.info('[apiClient] New AccessToken saved (first 8 chars):', String(token).slice(0, 8) + '...')
 
       if (expireMs) {
-        // Convert expireMs (UTC ms since epoch) into IST ms-epoch before saving
+
         const expireMsIST = expireMs + IST_OFFSET_MS
-        // set max-age to remaining lifetime (minimum 60s)
+
         const remaining = Math.max(60, Math.floor((expireMsIST - Date.now()) / 1000))
         setCookie('TimeStampAccessToken', String(expireMsIST), remaining)
         console.info('[apiClient] TimeStampAccessToken (IST ms) set to:', expireMsIST, 'originalUTC(ms):', expireMs, 'remainingSeconds:', remaining)
       } else if (expireAt) {
-        // If we only have a raw expireAt string, save it as-is (convert to IST if parseable)
+
         const parsed = Date.parse(String(expireAt))
         if (!Number.isNaN(parsed)) {
           const expireMsIST = parsed + IST_OFFSET_MS
@@ -101,18 +101,18 @@ const refreshAccessToken = async () => {
         }
       }
 
-      // Notify app that the access token was refreshed so components can reload state
+
       try {
         if (typeof window !== 'undefined' && window && typeof window.dispatchEvent === 'function') {
           try {
             window.dispatchEvent(new CustomEvent('accessToken:refreshed', { detail: { token, expireAt: expireMs || expireAt } }))
             console.info('[apiClient] Dispatched accessToken:refreshed event')
           } catch (e) {
-            // ignore dispatch failure
+
           }
         }
       } catch (e) {
-        // ignore
+
       }
 
       return token
@@ -124,19 +124,19 @@ const refreshAccessToken = async () => {
   return refreshPromise
 }
 
-// Request interceptor: refresh token if access timestamp expired and attach Authorization header
+
 apiClient.interceptors.request.use(async (config) => {
   try {
     let tsRaw = getCookie('TimeStampAccessToken') || 0
     let ts = Number(tsRaw) || 0
-    // If TimeStampAccessToken stored is in IST ms (we write IST ms), compare using an IST-aware clock
+
     const nowIst = Date.now() + IST_OFFSET_MS
     if (ts && nowIst >= ts) {
-      // Attempt refresh
+
       try {
         await refreshAccessToken()
       } catch (e) {
-        // Ignore - let request proceed; backend will respond 401 if still unauthorized
+
       }
     }
 
@@ -147,7 +147,7 @@ apiClient.interceptors.request.use(async (config) => {
       config.headers.Authorization = token.toLowerCase().startsWith('bearer ') ? token : `Bearer ${token}`
     }
   } catch (e) {
-    // silence.
+
   }
   return config
 }, (error) => Promise.reject(error))
@@ -167,5 +167,5 @@ apiClient.interceptors.response.use(
 
 export default apiClient
 
-// Export helper for other modules to trigger a refresh when needed
+
 export { refreshAccessToken }

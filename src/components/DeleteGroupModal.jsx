@@ -30,9 +30,9 @@ const DeleteGroupModal = ({ isOpen, onClose, onSuccess, groupId, leaderIdProp, a
         throw new Error(parsed.message || 'Failed to delete group')
       }
 
-      // success: call onSuccess if present, else redirect
+
       try { if (onSuccess) onSuccess({ message: 'The Group has been deleted' }) } catch (e) {}
-      // small delay for UX
+
       setTimeout(() => { window.location.href = '/friends' }, 750)
     } catch (err) {
       console.error('DeleteGroupModal error:', err)

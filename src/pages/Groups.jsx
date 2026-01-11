@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import AlertBanner from '../components/AlertBanner.jsx' 
+import AlertBanner from '../components/AlertBanner.jsx'
 import accentOptions from '../theme/accentOptions.js'
 import { getSavedAccentKey } from '../theme/accentStorage.js'
 import NavigationBar from '../components/NavigationBar.jsx'
@@ -25,7 +25,7 @@ function Groups() {
   const navigate = useNavigate()
   const [showCreateModal, setShowCreateModal] = useState(false)
 
-  // Create Group form state
+
   const [groupName, setGroupName] = useState('')
   const [groupBio, setGroupBio] = useState('')
   const [iconFile, setIconFile] = useState(null)
@@ -48,7 +48,7 @@ function Groups() {
     const raw = getCookie('AccessToken') || getCookie('accessToken') || (typeof localStorage !== 'undefined' ? localStorage.getItem('AccessToken') || localStorage.getItem('accessToken') : '') || ''
     const trimmed = raw.trim()
     if (!trimmed) return ''
-    // If the stored value already includes a Bearer prefix (in any case), strip it and normalize
+
     const token = trimmed.replace(/^\s*bearer\s+/i, '').trim()
     return token ? `Bearer ${token}` : ''
   }
@@ -126,7 +126,7 @@ function Groups() {
             </header>
 
             <main className="mt-8 grid gap-6 lg:grid-cols-[1fr_340px]">
-              {/* Center: on mobile show groups list, on desktop show posts feed for all groups' members */}
+
               <section className="space-y-6">
                 <div className="lg:hidden">
                   {loadingGroups ? (
@@ -187,7 +187,7 @@ function Groups() {
               </aside>
             </main>
 
-            {/* Create Group Modal */}
+
             <AnimatePresence>
               {showCreateModal && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-md p-4" onClick={() => setShowCreateModal(false)}>
@@ -239,7 +239,7 @@ function Groups() {
                     <div className="relative p-6 border-t border-white/10 flex items-center justify-between gap-4">
                       <button onClick={() => setShowCreateModal(false)} className="rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">Cancel</button>
                       <button onClick={async () => {
-                        // client side validation
+
                         setFileError('')
                         setApiMessage('')
                         if (!groupName.trim() || !groupBio.trim() || !iconFile || !bgFile) { setApiMessage('All fields are required.'); setApiStatus('error'); return }
@@ -249,10 +249,10 @@ function Groups() {
                           const dto = { groupName: String(groupName).trim(), groupBio: String(groupBio).trim(), leaderId }
                           const formData = new FormData()
                           formData.append('requestDto', new Blob([JSON.stringify(dto)], { type: 'application/json' }))
-                          // add profile image under a couple of names that backends sometimes expect
+
                           formData.append('profileImage', iconFile)
                           formData.append('icon', iconFile)
-                          // add background image under multiple keys to ensure backend accepts it
+
                           formData.append('bgImage', bgFile)
                           formData.append('backgroundImage', bgFile)
 
@@ -260,7 +260,7 @@ function Groups() {
                           const headers = token ? { Authorization: token } : undefined
 
                           const url = import.meta.env.VITE_API_BASE_URL + 'profile/group/create'
-                          // Log the exact URL being called and whether an Authorization header is present (token redacted)
+
                           console.log('POST', url, 'Authorization present:', !!headers?.Authorization)
                           try {
                             console.log('FormData keys:', Array.from(formData.keys()))
@@ -276,7 +276,7 @@ function Groups() {
                           const data = body
                           setApiMessage('Group created')
                           setApiStatus('success')
-                          // add to list
+
                           setGroups((prev) => [{ id: data?.data?.id || `g${Date.now()}`, name: dto.groupName, members: 1, activity: 'Now', image: iconPreview }, ...prev])
                           setTimeout(() => setShowCreateModal(false), 800)
                         } catch (err) {

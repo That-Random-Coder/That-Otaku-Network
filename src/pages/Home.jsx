@@ -8,7 +8,7 @@ const getCookie = (name) => {
 }
 import { AnimatePresence } from 'framer-motion'
 import * as Tooltip from '@radix-ui/react-tooltip'
-import { MessageCircle, ThumbsDown, ThumbsUp, Bookmark, Sparkles, Share2 } from 'lucide-react' 
+import { MessageCircle, ThumbsDown, ThumbsUp, Bookmark, Sparkles, Share2 } from 'lucide-react'
 import accentOptions from '../theme/accentOptions.js'
 import { getSavedAccentKey } from '../theme/accentStorage.js'
 import NavigationBar from '../components/NavigationBar.jsx'
@@ -27,14 +27,14 @@ function Home() {
   const [loadingFeed, setLoadingFeed] = useState(false)
   const [alertBanner, setAlertBanner] = useState(null)
 
-  // Feed scope: 'all' or 'following'
+
   const [feedScope, setFeedScope] = useState('all')
-  // Pagination state for the Following feed
+
   const [feedPage, setFeedPage] = useState(0)
   const [feedLoadingMore, setFeedLoadingMore] = useState(false)
   const [feedHasMore, setFeedHasMore] = useState(true)
 
-  // Fetch list of following user ids (first page) - used to build a 'following' feed client-side when backend doesn't provide one
+
   const fetchFollowingIds = async (uid) => {
     const token = getBearerToken()
     const endpoint = `${import.meta.env.VITE_API_BASE_URL}profile/user/following/list?id=${encodeURIComponent(uid)}&page=0`
@@ -55,10 +55,10 @@ function Home() {
     }
   }
 
-  // Centralized feed fetch so it can be used on mount and by the Refresh / scope switch
-  // Supports paged loading for the 'following' scope (page param appended to endpoint)
+
+
   const loadFeed = async (scope = 'all', page = 0, append = false) => {
-    // page === 0 is a full/initial load; append === true indicates infinite-scroll append
+
     if (append) setFeedLoadingMore(true)
     else setLoadingFeed(true)
     setAlertBanner(null)
@@ -69,7 +69,7 @@ function Home() {
       const url = `${import.meta.env.VITE_API_BASE_URL}recommendation/feed/get?userId=${encodeURIComponent(uid)}`
       try { console.log('[Home] fetching recommendation feed URL (manual):', url, 'authPresent:', !!auth, 'scope:', scope, 'page:', page, 'append:', append) } catch (e) {}
 
-      // Fetch the recommendation feed (used as a fallback or for 'all')
+
       const res = await fetchWithAuthRetry(url, { headers: { ...(auth ? { Authorization: auth, AccessToken: tokenRaw } : {}) } })
       const data = await res.json().catch(() => ([]))
       if (!res.ok) {
@@ -83,13 +83,13 @@ function Home() {
         setPosts(arr.map(mapFeedItem))
         setFeedHasMore(false)
       } else {
-        // Following scope: prefer backend paged following-recommendation endpoint
+
         try {
           const token = getBearerToken()
           const followingUrl = `${import.meta.env.VITE_API_BASE_URL}content/content/recommendation/following?userId=${encodeURIComponent(uid)}&page=${encodeURIComponent(page)}`
           try { console.log('[Home] fetching following recommendations URL:', followingUrl, 'authPresent:', !!token) } catch (e) {}
 
-          // Use fetchWithAuthRetry which will refresh token once on 401
+
           let res2 = await fetchWithAuthRetry(followingUrl, { headers: { ...(token ? { Authorization: token } : {}) } })
           let data2 = await res2.json().catch(() => ([]))
 
@@ -100,7 +100,7 @@ function Home() {
 
           const arr2 = Array.isArray(data2) ? data2 : (data2?.data || data2?.content || [])
 
-          // Determine pagination availability
+
           const totalPages = (typeof data2?.totalPages === 'number') ? data2.totalPages : (typeof data2?.totalElements === 'number' && typeof data2?.pageSize === 'number' ? Math.ceil(data2.totalElements / data2.pageSize) : undefined)
           const pageSize = data2?.pageSize ?? data2?.size ?? (Array.isArray(arr2) ? arr2.length : 0)
 
@@ -126,7 +126,7 @@ function Home() {
           }
         } catch (err) {
           console.error('Failed to fetch following feed endpoint, falling back to local filter', err)
-          // fallback: filter recommendation feed client-side and page it locally
+
           try {
             const followingIds = await fetchFollowingIds(uid)
             if (!followingIds || followingIds.length === 0) {
@@ -141,7 +141,7 @@ function Home() {
               return followingIds.includes(author)
             })
 
-            // Page locally
+
             const start = page * BATCH_SIZE
             const slice = filtered.slice(start, start + BATCH_SIZE)
             if (append) setPosts((prev) => ([...prev, ...slice.map(mapFeedItem)]))
@@ -163,7 +163,7 @@ function Home() {
       setLoadingFeed(false)
       setFeedLoadingMore(false)
     }
-  }  
+  }
   const [mediaMap, setMediaMap] = useState({})
   const [mediaPage, setMediaPage] = useState(0)
   const BATCH_SIZE = 10
@@ -173,7 +173,7 @@ function Home() {
   const [mediaHasMore, setMediaHasMore] = useState(true)
   const sentinelRef = useRef(null)
 
-  // Groups (joined by user) shown in Quick Picks
+
   const [groups, setGroups] = useState([])
   const [loadingGroups, setLoadingGroups] = useState(true)
   const [groupsError, setGroupsError] = useState('')
@@ -186,7 +186,7 @@ function Home() {
     return token ? `Bearer ${token}` : ''
   }
 
-  // Helper to perform fetch and retry once with a refreshed token when a 401 occurs
+
   const fetchWithAuthRetry = async (url, opts = {}) => {
     const options = { ...(opts || {}) }
     options.headers = { ...(options.headers || {}) }
@@ -203,7 +203,7 @@ function Home() {
         res = await fetch(url, options)
       } catch (rfErr) {
         console.error('[Home] token refresh attempt failed during fetchWithAuthRetry', rfErr)
-        // return original 401 response to be handled by caller
+
         return res
       }
     }
@@ -226,7 +226,7 @@ function Home() {
     time: it.timeOfCreation || it.time || ''
   })
 
-  // Normalize media payloads into a usable src (matches logic used in Post and UserPostsGrid)
+
   const buildMediaSrc = (media, mediaType) => {
     if (!media) return ''
     if (typeof media === 'string') {
@@ -234,7 +234,7 @@ function Home() {
       const t = String(mediaType || '').toLowerCase()
       if (t.includes('image')) return `data:${mediaType || 'image/jpeg'};base64,${media}`
       if (t.includes('video')) return `data:${mediaType};base64,${media}`
-      // if it's an absolute/relative URL return as-is, otherwise assume base64 image
+
       if (media.startsWith('http://') || media.startsWith('https://') || media.startsWith('/')) return media
       return `data:image/jpeg;base64,${media}`
     }
@@ -246,10 +246,10 @@ function Home() {
     return ''
   }
 
-  // Helper to extract canonical counts from various server response shapes
+
   const parseCountsFromResponse = (data) => {
     if (!data) return {}
-    // Response might be the item itself, or { data: item } or a wrapper
+
     const item = Array.isArray(data) ? null : (data.data || data || {})
     const prefer = (k1, k2) => (item[k1] ?? item[k2] ?? data[k1] ?? data[k2])
     const likes = prefer('likeCount', 'likes')
@@ -305,7 +305,7 @@ function Home() {
       console.warn('[Home] window.addEventListener not available; accent:changed events will not be observed')
     }
 
-    // On mount, prefer stored recommendationFeed if present
+
     (async () => {
       try {
         const raw = localStorage.getItem('recommendationFeed')
@@ -316,7 +316,7 @@ function Home() {
           }
         }
 
-        // always refresh feed from API
+
         await loadFeed(feedScope)
       } catch (e) {
         console.error('fetch feed error', e)
@@ -334,7 +334,7 @@ function Home() {
     }
   }, [])
 
-  // Fetch groups joined by the current user (for Quick Picks)
+
   const fetchGroups = async () => {
     setLoadingGroups(true)
     setGroupsError('')
@@ -373,10 +373,10 @@ function Home() {
     fetchGroups()
   }, [])
 
-  // Optimistic reaction handler that calls backend and syncs across pages
+
   const pendingReactions = new Set()
   const toggleReaction = async (id, key) => {
-    // key: 'likes' or 'dislikes' or 'isFaved'
+
     if (pendingReactions.has(`${id}:${key}`)) return
     pendingReactions.add(`${id}:${key}`)
 
@@ -400,9 +400,9 @@ function Home() {
         url = import.meta.env.VITE_API_BASE_URL + 'content/content/dislike'
         body = { contentId: id, userId: uid }
       } else {
-        // Fallback: toggle favorite locally only (no API endpoint assumed)
+
         pendingReactions.delete(`${id}:${key}`)
-        // Broadcast local update
+
         const p = posts.find((pp) => pp.id === id)
         window.dispatchEvent(new CustomEvent('post:updated', { detail: { contentId: id, update: { isFaved: p?.isFaved } } }))
         return
@@ -416,13 +416,13 @@ function Home() {
         throw new Error(parsed.message || 'Failed to update reaction')
       }
 
-      // prefer server-returned counts when available
+
       const serverUpdate = parseCountsFromResponse(data)
       if (Object.keys(serverUpdate).length > 0) {
         setPosts((prev) => prev.map((p) => (p.id === id ? ({ ...p, ...serverUpdate }) : p)))
         window.dispatchEvent(new CustomEvent('post:updated', { detail: { contentId: id, update: serverUpdate } }))
       } else {
-        // fallback to optimistic current values
+
         const updated = (function () {
           const p = (posts || []).find((pp) => pp.id === id) || null
           return p ? { likes: p.likes, dislikes: p.dislikes, isFaved: p.isFaved } : {}
@@ -431,7 +431,7 @@ function Home() {
       }
     } catch (err) {
       console.error('reaction error', err)
-      // Revert optimistic change on failure
+
       setPosts((prev) => prev.map((p) => {
         if (p.id !== id) return p
         if (key === 'isFaved') return { ...p, isFaved: !p.isFaved }
@@ -443,7 +443,7 @@ function Home() {
     }
   }
 
-  // Fetch media for posts in paginated batches (BATCH_SIZE) and keep a map of contentId -> media array
+
   useEffect(() => {
     let cancelled = false
     const loadBatchMedia = async () => {
@@ -466,9 +466,9 @@ function Home() {
         const uid = getCookie('id') || getCookie('userId') || ''
         const token = getCookie('AccessToken') || localStorage.getItem('AccessToken') || ''
         const auth = token ? (token.toLowerCase().startsWith('bearer ') ? token : `Bearer ${token}`) : ''
-        // encode each id but keep commas as separators (server expects comma-separated ids)
+
         const idsParam = batchIds.map((id) => encodeURIComponent(String(id))).join(',')
-        // Keep the server page param at 0 (we control batching client-side via contentIds slicing)
+
         const url = `${import.meta.env.VITE_API_BASE_URL}content/content/get/batch?contentIds=${idsParam}&currentUserId=${encodeURIComponent(uid)}&page=0&includeMedia=true`
         try {
           console.log('[Home] fetching media batch (comma-separated contentIds):', url, 'authPresent:', !!auth)
@@ -488,7 +488,7 @@ function Home() {
           throw new Error(parsed.message || 'Failed to fetch media batch')
         }
 
-        // Prefer the `content` array when the backend returns a paginated wrapper
+
         const pageContents = Array.isArray(data) ? data : (data?.data || [])
         console.log('[Home] pageContents:', pageContents)
         const arr = Array.isArray(data?.content) ? data.content : pageContents
@@ -517,13 +517,13 @@ function Home() {
         try { console.log('[Home] about to set mediaMap keys:', Object.keys(map)) } catch (e) {}
 
         if (!cancelled) {
-          // If the batch returned nothing for these ids, attempt a retry (maybe server glitch)
+
           if ((!arr || arr.length === 0) && batchIds.length > 0) {
             const rc = (retryCounts.current[mediaPage] || 0) + 1
             retryCounts.current[mediaPage] = rc
             console.warn('[Home] batch returned 0 items for page', mediaPage, 'retry', rc)
             if (rc <= MAX_RETRIES) {
-              // Retry after a short backoff
+
               setTimeout(() => { loadBatchMedia() }, 500 * rc)
               return
             } else {
@@ -561,7 +561,7 @@ function Home() {
             })
           }
 
-          // Determine if there are more batches available
+
           const totalFetched = start + (Array.isArray(arr) ? arr.length : 0)
           if (totalFetched >= allContentIds.length) setMediaHasMore(false)
         }
@@ -575,7 +575,7 @@ function Home() {
     return () => { cancelled = true }
   }, [posts, mediaPage])
 
-  // reset pagination when posts list changes
+
   useEffect(() => {
     setMediaPage(0)
     setMediaMap({})
@@ -583,22 +583,22 @@ function Home() {
     retryCounts.current = {}
   }, [posts])
 
-  // When feed page increments (due to infinite scroll) load the next page for 'following' scope
+
   useEffect(() => {
     if (feedPage === 0) return
-    // only trigger when scope is following
+
     if (feedScope !== 'following') return
-    // append next page
+
     loadFeed('following', feedPage, true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [feedPage])
 
-  // Listen for token refresh events and re-load key data without a full page reload
+
   useEffect(() => {
     const onTokenRefreshed = (e) => {
       try {
         console.info('[Home] Access token refreshed; reloading feed, groups, and media')
-        // reset feed pagination and media pagination
+
         setFeedPage(0)
         setFeedHasMore(true)
         setFeedLoadingMore(false)
@@ -610,7 +610,7 @@ function Home() {
         setMediaHasMore(true)
         retryCounts.current = {}
 
-        // reload groups and feed for current scope
+
         fetchGroups().catch((err) => console.warn('fetchGroups after token refresh failed', err))
         loadFeed(feedScope, 0, false)
       } catch (err) {
@@ -628,19 +628,19 @@ function Home() {
     }
   }, [feedScope])
 
-  // IntersectionObserver sentinel to load next page when user scrolls near bottom
+
   useEffect(() => {
     if (!sentinelRef.current) return
     const obs = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return
 
-        // If following scope is active, prefer loading next page of feed posts
+
         if (feedScope === 'following' && !feedLoadingMore && feedHasMore) {
           setFeedPage((p) => p + 1)
         }
 
-        // Also continue loading media batches as before
+
         if (!mediaLoading && mediaHasMore) {
           setMediaPage((p) => p + 1)
         }
@@ -650,7 +650,7 @@ function Home() {
     return () => obs.disconnect()
   }, [sentinelRef.current, mediaLoading, mediaHasMore, posts, feedScope, feedLoadingMore, feedHasMore])
 
-  // Component that renders media for a post. Shows a persistent buffer spinner until the media loads; if loading fails, spinner remains visible per requirement.
+
   function PostMedia({ contentId, fallback }) {
     const [loaded, setLoaded] = useState(false)
     const [src, setSrc] = useState(null)
@@ -740,7 +740,7 @@ function Home() {
     )
   }
 
-  // Share handler: open native share or copy URL and increment local share count
+
   const handleShare = async (id) => {
     const url = `${window.location.origin}/post/${id}`
     try {
@@ -753,10 +753,10 @@ function Home() {
         try { console.log('[Home] share URL (fallback):', url) } catch (e) {}
       }
 
-      // optimistic local increment (will be replaced with server value when available)
+
       setPosts((prev) => prev.map((p) => (p.id === id ? ({ ...p, shareCount: Number(p.shareCount || 0) + 1 }) : p)))
 
-      // Try to call backend share endpoint if present (best-effort)
+
       try {
         const tokenRaw = getCookie('AccessToken') || localStorage.getItem('AccessToken') || ''
         const auth = tokenRaw.trim() ? (tokenRaw.toLowerCase().startsWith('bearer ') ? tokenRaw : `Bearer ${tokenRaw}`) : ''
@@ -774,7 +774,7 @@ function Home() {
           }
         }
       } catch (e) {
-        // ignore server failure; we already updated locally
+
         console.warn('share API failed', e)
       }
     } catch (e) {
@@ -806,7 +806,7 @@ function Home() {
             <div className="flex items-center gap-3">
               <h1 className="mt-2 text-4xl font-semibold text-white">Feed</h1>
 
-              {/* All / Following switch */}
+
               <div className="mt-3 ml-4 flex items-center rounded-full bg-white/5 p-1 text-sm font-semibold" role="tablist" aria-label="Feed scope">
                 <button
                   type="button"
@@ -828,12 +828,12 @@ function Home() {
                 </button>
               </div>
 
-              {/* <button onClick={fetchRecommendationFeed} disabled={loadingFeed} className="mt-2 rounded-md px-3 py-1.5 text-sm font-semibold bg-white/5 hover:bg-white/10 disabled:opacity-50" aria-label="Refresh feed">{loadingFeed ? 'Refreshing...' : 'Refresh Feed'}</button> */}
+
             </div>
             <p className="mt-1 text-sm text-slate-200/85 max-w-2xl">Fresh drops from your circles. Tap in, react, and favorite the best takes.</p>
             {alertBanner && <div className="mt-3"><AlertBanner status={alertBanner.status} message={alertBanner.message} /></div>}
           </div>
-          {/* Accent color picker removed, now only in Profile settings */}
+
         </header>
 
 
@@ -842,7 +842,7 @@ function Home() {
         <NavigationBar accent={accent} variant="inline" />
           <section className="space-y-5">
 
-            {/* Empty state messages */}
+
             {!loadingFeed && posts.length === 0 && (
               <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center text-slate-300">
                 {feedScope === 'following' ? (
@@ -886,7 +886,7 @@ function Home() {
                 <div className="relative overflow-hidden">
                   <PostMedia contentId={post.id} fallback={post.image} />
 
-                  {/* Hover overlay: center heart and comment icons; stay hidden until hovered (uses parent's .group) */}
+
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div className="flex items-center gap-6 opacity-0 transform scale-95 transition-all duration-150 group-hover:opacity-100 group-hover:scale-100 pointer-events-auto">
                       <button
@@ -968,7 +968,7 @@ function Home() {
               </article>
             ))}
 
-            {/* Infinite scroll sentinel and buffer spinner */}
+
             <div ref={sentinelRef} className="py-6 flex items-center justify-center">
               {mediaLoading ? (
                 <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-white/70" />

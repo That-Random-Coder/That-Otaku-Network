@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import anime from 'animejs/lib/anime.es.js'
-import AlertBanner from '../components/AlertBanner.jsx' 
+import AlertBanner from '../components/AlertBanner.jsx'
 
 const shuffleArray = (arr) => arr
   .map((item) => ({ value: item, sort: Math.random() }))

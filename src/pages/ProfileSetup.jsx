@@ -52,7 +52,7 @@ const getBearerToken = () => {
   return trimmed.toLowerCase().startsWith('bearer ') ? trimmed : `Bearer ${trimmed}`
 }
 
-// Custom styles for react-select to match the dark theme
+
 const selectStyles = (accent) => ({
   control: (base, state) => ({
     ...base,
@@ -85,7 +85,7 @@ const selectStyles = (accent) => ({
   dropdownIndicator: (base) => ({ ...base, color: 'rgba(255,255,255,0.5)' }),
 })
 
-// Location Picker Modal
+
 const LocationPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [selectedState, setSelectedState] = useState(null)
@@ -212,7 +212,7 @@ const LocationPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe }) 
   )
 }
 
-// Character Picker Modal (80% of screen)
+
 const CharacterPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe }) => {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
@@ -221,7 +221,7 @@ const CharacterPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe })
   const [error, setError] = useState('')
   const [selected, setSelected] = useState(null)
 
-  // Fetch featured characters on mount
+
   useEffect(() => {
     if (!isOpen) return
     const fetchFeatured = async () => {
@@ -236,14 +236,14 @@ const CharacterPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe })
         setFeatured(data.data?.map(c => ({ id: c.mal_id, name: c.name, imageUrl: c.images?.jpg?.image_url })) || [])
       } catch (err) {
         setFeatured([])
-        // set a small error message for the modal context
+
         setError(err?.message || 'Failed to fetch featured characters')
       }
     }
     fetchFeatured()
   }, [isOpen])
 
-  // Search characters
+
   useEffect(() => {
     if (!query.trim()) { setResults([]); return }
     const controller = new AbortController()
@@ -305,7 +305,7 @@ const CharacterPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe })
           <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-indigo-500/25 blur-3xl" />
 
-          {/* Header */}
+
           <div className="relative p-6 border-b border-white/10">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -329,7 +329,7 @@ const CharacterPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe })
             </div>
           </div>
 
-          {/* Character Grid */}
+
           <div className="relative flex-1 overflow-y-auto p-6">
             {loading && <div className="text-center text-slate-300 py-8">Searching characters...</div>}
             {error && (
@@ -373,7 +373,7 @@ const CharacterPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe })
             )}
           </div>
 
-          {/* Footer */}
+
           <div className="relative p-6 border-t border-white/10 flex items-center justify-between gap-4">
             {selected ? (
               <div className="flex items-center gap-3">
@@ -469,14 +469,14 @@ function ProfileSetup() {
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  // Local DOB parts for flexible selection order
+
   const [dobY, setDobY] = useState('')
   const [dobM, setDobM] = useState('')
   const [dobD, setDobD] = useState('')
   const [dobFocus, setDobFocus] = useState({ day: false, month: false, year: false })
 
   useEffect(() => {
-    // If form.dateOfBirth is populated externally, sync to local parts
+
     if (form.dateOfBirth) {
       const [y, m, d] = String(form.dateOfBirth).split('-')
       setDobY(y || '')
@@ -485,10 +485,10 @@ function ProfileSetup() {
     }
   }, [form.dateOfBirth])
 
-  // Helper to set date parts and validate against today
+
   const setDobParts = (y, m, d) => {
     if (!y || !m || !d) {
-      // partial selection: store parts but clear final value
+
       setForm((prev) => ({ ...prev, dateOfBirth: '' }))
       setFieldErrors((prev) => ({ ...prev, dateOfBirth: '' }))
       setDobY(y || '')
@@ -496,11 +496,11 @@ function ProfileSetup() {
       setDobD(d || '')
       return
     }
-    // normalize ints
+
     const yy = parseInt(String(y), 10)
     const mm = parseInt(String(m), 10)
     let dd = parseInt(String(d), 10)
-    // clamp day to month length
+
     const daysInMonth = new Date(yy, mm, 0).getDate()
     if (dd > daysInMonth) dd = daysInMonth
     const ddStr = String(dd).padStart(2, '0')
@@ -508,9 +508,9 @@ function ProfileSetup() {
     const iso = `${String(yy)}-${mmStr}-${ddStr}`
     if (iso > todayIso) {
       setFieldErrors((prev) => ({ ...prev, dateOfBirth: 'Date of birth cannot be in the future' }))
-      // clamp to today
+
       setForm((prev) => ({ ...prev, dateOfBirth: todayIso }))
-      // sync parts to today
+
       const [ty, tm, td] = todayIso.split('-')
       setDobY(ty); setDobM(tm); setDobD(td)
     } else {
@@ -550,7 +550,7 @@ function ProfileSetup() {
       return
     }
 
-    // Client-side required validation
+
     const errs = {}
     if (!String(form.displayName || '').trim()) errs.displayName = 'Display name is required.'
     else if (String(form.displayName || '').trim().length < 6 || String(form.displayName || '').trim().length > 50) errs.displayName = 'Display name length must be between 6 and 50 characters'
@@ -608,9 +608,9 @@ function ProfileSetup() {
 
       setApiStatus('success')
       setApiMessage('Profile created successfully! Proceeding to preferences...')
-      // Set displayName cookie so it's available across the app
+
       try { const d = String(form.displayName?.trim() || ''); if (d) document.cookie = `displayName=${encodeURIComponent(d)}; path=/; max-age=604800; SameSite=Lax` } catch(e) {}
-      // Redirect to preferences step instead of marking profile completed & going home
+
       setTimeout(() => navigate('/preferences', { replace: true }), 900)
     } catch (err) {
       const body = err?.response?.data
@@ -646,7 +646,7 @@ function ProfileSetup() {
       />
 
       <div className="relative flex min-h-screen w-full max-w-none flex-col items-center justify-center gap-8 px-0 sm:px-0 lg:flex-row lg:items-stretch lg:justify-between lg:gap-0 lg:px-0">
-        {/* Left: Profile Card */}
+
         <div className="flex w-full max-w-xl flex-col items-center justify-center px-4 py-10 sm:px-8 lg:w-2/5 lg:items-start lg:justify-center lg:px-10 xl:px-14">
           <motion.div
             initial={motionSafe ? { opacity: 0, y: 20, scale: 0.98 } : false}
@@ -663,7 +663,7 @@ function ProfileSetup() {
             <div className="pointer-events-none absolute -bottom-24 -right-20 h-72 w-72 rounded-full bg-indigo-500/25 blur-3xl" />
 
             <div className="relative p-8 sm:p-10">
-              {/* Header */}
+
               <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
                 <div className="flex flex-col items-center sm:items-start">
                   <p className="text-xs uppercase tracking-[0.25em] text-slate-300/80">ThatOtakuNetwork</p>
@@ -688,11 +688,11 @@ function ProfileSetup() {
                 </div>
               </div>
 
-              {/* Form */}
+
               <div className="mt-8">
                 <AlertBanner status={apiStatus} message={apiMessage} />
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  {/* Username (text display, not input) */}
+
                   <div>
                     <label className="block text-sm font-medium text-slate-200 mb-2">Username</label>
                     <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
@@ -701,7 +701,7 @@ function ProfileSetup() {
                     </div>
                   </div>
 
-                  {/* Display Name */}
+
                   <label className="block text-sm font-medium text-slate-200">Display Name <span className="text-rose-400">*</span></label>
                   <input
                     id="displayName"
@@ -715,7 +715,7 @@ function ProfileSetup() {
                   />
                   {fieldErrors.displayName && <p className="mt-2 text-sm text-rose-200">{fieldErrors.displayName}</p>}
 
-                  {/* Bio */}
+
                   <div>
                     <label htmlFor="bio" className="block text-sm font-medium text-slate-200">Bio <span className="text-rose-400">*</span></label>
                     <div className="relative mt-2">
@@ -734,7 +734,7 @@ function ProfileSetup() {
                     {fieldErrors.bio && <p className="mt-2 text-sm text-rose-200">{fieldErrors.bio}</p>}
                   </div>
 
-                  {/* Location (with modal trigger) */}
+
                   <div>
                     <label className="block text-sm font-medium text-slate-200 mb-2">Location <span className="text-rose-400">*</span></label>
                     <button
@@ -751,11 +751,11 @@ function ProfileSetup() {
                     {fieldErrors.location && <p className="mt-2 text-sm text-rose-200">{fieldErrors.location}</p>}
                   </div>
 
-                  {/* Date of Birth (Discord-style selector) */}
+
                   <div>
                     <label className="block text-sm font-medium text-slate-200">Date of Birth <span className="text-rose-400">*</span></label>
                     <div className="mt-2 grid grid-cols-3 gap-3" role="group" aria-label="Date of birth selector">
-                      {/* Day */}
+
                       <div>
                         <label className="sr-only">Day</label>
                         <select
@@ -780,7 +780,7 @@ function ProfileSetup() {
                         </select>
                       </div>
 
-                      {/* Month */}
+
                       <div>
                         <label className="sr-only">Month</label>
                         <select
@@ -799,7 +799,7 @@ function ProfileSetup() {
                         </select>
                       </div>
 
-                      {/* Year */}
+
                       <div>
                         <label className="sr-only">Year</label>
                         <select
@@ -822,7 +822,7 @@ function ProfileSetup() {
                     {fieldErrors.dateOfBirth && <p className="mt-2 text-sm text-rose-200">{fieldErrors.dateOfBirth}</p>}
                   </div>
 
-                  {/* Profile Image */}
+
                   <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <span className="text-sm font-semibold text-white">Profile Image</span>
@@ -879,7 +879,7 @@ function ProfileSetup() {
                     )}
                   </div>
 
-                  {/* Submit Button */}
+
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
@@ -899,7 +899,7 @@ function ProfileSetup() {
           </motion.div>
         </div>
 
-        {/* Right: AnimeWall */}
+
         <div className="hidden w-full items-stretch lg:flex lg:w-[62%] relative">
           <Suspense fallback={<WallSkeleton />}>
             <AnimeWall reduceMotion={reduceMotion} isLowPower={isLowPower} onLoadingChange={setWallLoading} />
@@ -907,7 +907,7 @@ function ProfileSetup() {
         </div>
       </div>
 
-      {/* Modals */}
+
       <LocationPickerModal
         isOpen={locationModalOpen}
         onClose={() => setLocationModalOpen(false)}

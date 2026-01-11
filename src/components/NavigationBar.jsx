@@ -12,7 +12,7 @@ const navItems = [
   { key: 'profile', label: 'Profile', to: '/profile', icon: UserRound, showInMobile: true, showInDesktop: false },
 ]
 
-// Helper to read cookie (used to build profile link dynamically)
+
 const getCookie = (name) => {
   if (typeof document === 'undefined') return ''
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
@@ -29,7 +29,7 @@ function NavigationBar({ accent, variant = 'mobile' }) {
   const userInitials = username.slice(0, 2).toUpperCase()
   const userId = getCookie('id') || getCookie('userId')
 
-  // use shared clearSession helper so mobile and desktop logout behave the same
+
   const handleLogout = () => {
     if (loggingOut) return
     import('../lib/session.js').then(({ clearSession }) => clearSession(navigate, setLoggingOut)).catch((e) => console.error(e))
@@ -48,7 +48,7 @@ function NavigationBar({ accent, variant = 'mobile' }) {
       borderColor: 'rgba(255,255,255,0.18)',
     }
 
-    // Hide non-mobile items on mobile variant
+
   if (variant === 'mobile' && item.showInMobile === false) return null
 
   return (
@@ -61,14 +61,14 @@ function NavigationBar({ accent, variant = 'mobile' }) {
         style={isActive ? activeStyles : { background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)' }}
       >
         <Icon className="h-4 w-4" />
-        {/* On mobile, hide visible text and keep for screen readers */}
+
         {variant === 'mobile' ? <span className="sr-only">{item.label}</span> : <span>{item.label}</span>}
       </NavLink>
     )
   }
 
   if (variant === 'inline') {
-    // Desktop sidebar: fixed left column + inline spacer to push page content
+
     return (
       <>
         <aside className="hidden md:flex md:flex-col md:sticky md:top-6 md:self-start md:w-64 md:pt-6 md:pb-4 md:px-4 md:gap-4 md:h-[calc(100vh-4rem)] md:overflow-auto z-30">
@@ -151,7 +151,7 @@ function NavigationBar({ accent, variant = 'mobile' }) {
     <>
       <nav className="fixed inset-x-4 bottom-4 z-30 md:hidden">
       <div className="grid grid-cols-5 items-center gap-2 rounded-2xl border border-white/10 bg-black/60 p-2 shadow-[0_18px_60px_rgba(0,0,0,0.55)] backdrop-blur-xl">
-        {/* Mobile-specific ordering: home, search, create, groups, profile */}
+
         {(
           ['home','search','create','groups','profile']
             .map((k) => navItems.find((i) => i.key === k))

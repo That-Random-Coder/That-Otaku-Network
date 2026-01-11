@@ -9,7 +9,7 @@ const getCookie = (name) => {
   return match ? decodeURIComponent(match[1]) : ''
 }
 
-// Simple accent-aware spinner
+
 const Spinner = ({ size = 40, accent = {} }) => (
   <div style={{ width: size, height: size }} className="flex items-center justify-center">
     <svg viewBox="0 0 50 50" className="animate-spin" style={{ width: size, height: size }}>
@@ -38,7 +38,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // reset when user changes
+
     setPosts([])
     setPage(0)
     setHasMore(true)
@@ -52,7 +52,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
       setError('')
       try {
         const url = `${import.meta.env.VITE_API_BASE_URL}content/content/recommendation/all-groups-members?userId=${encodeURIComponent(userId || '')}&page=${p}&size=${BATCH_SIZE}`
-        // Use AccessToken cookie explicitly as Bearer token
+
         const tokenRaw = getCookie('AccessToken') || ''
         const auth = tokenRaw ? (tokenRaw.toLowerCase().startsWith('bearer ') ? tokenRaw : `Bearer ${tokenRaw}`) : ''
         const headers = auth ? { Authorization: auth, AccessToken: tokenRaw } : {}
@@ -65,7 +65,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
           throw new Error(parsed.message || 'Failed to fetch posts')
         }
         const arr = Array.isArray(body?.content) ? body.content : []
-        // map to the same post shape used by Home
+
         const mapFeedItem = (it) => ({
           id: it.contentId || it.id || String(Math.random()).slice(2),
           authorId: it.userId || it.userID || it.ownerId || it.creatorId || (it.user && it.user.id) || '',
@@ -120,7 +120,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
     return () => obs.disconnect()
   }, [sentinelRef.current, loading, hasMore, posts, page])
 
-  // Helpers copied from Home to match post shape and reactions UI
+
   const getBearerToken = () => {
     const raw = getCookie('AccessToken') || getCookie('accessToken') || (typeof localStorage !== 'undefined' ? localStorage.getItem('AccessToken') || localStorage.getItem('accessToken') : '') || ''
     const trimmed = raw.trim()
@@ -169,7 +169,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
     return ''
   }
 
-  // Optimistic reaction handler (likes, dislikes, isFaved)
+
   const pendingReactions = new Set()
   const toggleReaction = async (id, key) => {
     if (pendingReactions.has(`${id}:${key}`)) return
@@ -230,7 +230,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
     }
   }
 
-  // Share handler
+
   const handleShare = async (id) => {
     const url = `${window.location.origin}/post/${id}`
     try {
@@ -269,7 +269,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
     }
   }
 
-  // RemoteMedia: fetch remote http(s) media, convert data: and base64 payloads to Blobs and use object URLs to avoid embedding huge data URIs in the DOM
+
   const RemoteMedia = ({ src, mediaType = '' }) => {
     const [objUrl, setObjUrl] = useState(null)
     const [loaded, setLoaded] = useState(false)
@@ -315,17 +315,17 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
 
       (async () => {
         try {
-          // blob: URLs can be used directly
+
           if (src.startsWith('blob:')) { if (!canceled) setObjUrl(src); return }
 
-          // data: URIs -> convert to object URL to avoid embedding huge strings in DOM
+
           if (src.startsWith('data:')) {
             const url = await dataUriToObjectUrl(src)
             if (url && !canceled) { createdObjectUrl = url; setObjUrl(url) }
             return
           }
 
-          // http(s) -> fetch with Authorization-only header
+
           if (src.startsWith('http://') || src.startsWith('https://')) {
             const tokenRaw = getCookie('AccessToken') || ''
             const auth = tokenRaw ? (tokenRaw.toLowerCase().startsWith('bearer ') ? tokenRaw : `Bearer ${tokenRaw}`) : ''
@@ -338,7 +338,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
             return
           }
 
-          // Likely raw base64 payload (no data: prefix)
+
           if (isLikelyBase64(src)) {
             const mime = (mediaType && mediaType.includes('/')) ? mediaType : 'image/jpeg'
             const url = base64ToObjectUrl(src, mime)
@@ -346,7 +346,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
             return
           }
 
-          // Fallback: treat as direct URL/path
+
           if (!canceled) setObjUrl(src)
         } catch (e) {
           console.warn('[RemoteMedia] failed to resolve src', src, e)
@@ -371,7 +371,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
     )
   }
 
-  // Render like Home: article cards
+
   const PostMedia = ({ item }) => {
     const media = item.media || item.image || ''
     let chosen = ''
@@ -395,7 +395,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
   return (
     <div className="mt-8">
       <h3 className="text-lg font-semibold text-white mb-3">Posts</h3>
-      {/* {error && <div className="mb-4"><AlertBanner status="error" message={error} /></div>} */}
+
 
       {!loading && posts.length === 0 && (
         <div className="w-full max-w-2xl mx-auto rounded-3xl border border-white/10 bg-white/5 p-6 text-center">

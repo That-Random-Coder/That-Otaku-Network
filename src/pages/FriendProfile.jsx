@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import AlertBanner from '../components/AlertBanner.jsx'
-import accentOptions from '../theme/accentOptions.js' 
+import accentOptions from '../theme/accentOptions.js'
 import NavigationBar from '../components/NavigationBar.jsx'
 import { CheckCircle2, Share2 } from 'lucide-react'
 import QRCodeShareModal from '../components/QRCodeShareModal.jsx'
 import clsx from 'clsx'
 
-// Toast styling options copied from Authenticate's UX patterns
+
 const toastSuccessOptions = {
   position: 'top-center',
   autoClose: 2500,
@@ -111,7 +111,7 @@ function FriendProfile() {
           profileImg: p.profileImg ? `data:image/jpeg;base64,${p.profileImg}` : '',
           isVerified: !!p.isVerified,
         })
-        // Prefer API's `isFollow` when available (boolean), otherwise fall back to older `isFollowing`
+
         setIsFollowing(Boolean(p.isFollow ?? p.isFollowing))
       })
       .catch((err) => setError(err.message || 'Failed to fetch profile.'))
@@ -126,7 +126,7 @@ function FriendProfile() {
 
     try {
       if (!isFollowing) {
-        // Follow
+
         const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}profile/user/${encodeURIComponent(id)}/follow/${encodeURIComponent(friendId)}`, {
           method: 'POST',
           headers: {
@@ -142,7 +142,7 @@ function FriendProfile() {
         setProfile((prev) => prev ? ({ ...prev, followers: (prev.followers || 0) + 1 }) : prev)
         try { setAlertBanner({ status: 'success', message: 'Became their Nakama' }); setTimeout(() => setAlertBanner({ status: '', message: '' }), 2500) } catch (e) {}
       } else {
-        // Unfollow
+
         const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}profile/user/${encodeURIComponent(id)}/follow/${encodeURIComponent(friendId)}`, {
           method: 'DELETE',
           headers: {
@@ -159,7 +159,7 @@ function FriendProfile() {
         try { setAlertBanner({ status: 'error', message: 'Betrayed a Nakama' }); setTimeout(() => setAlertBanner({ status: '', message: '' }), 2500) } catch (e) {}
       }
     } catch (e) {
-      // Show actual API message when available
+
       try { setAlertBanner({ status: 'error', message: e?.message || (isFollowing ? 'Failed to unfollow' : 'Failed to follow') }); setTimeout(() => setAlertBanner({ status: '', message: '' }), 3500) } catch (err) {}
     } finally {
       setActionLoading(false)
@@ -224,7 +224,7 @@ function FriendProfile() {
                     )}
                   </div>
 
-                  {/* Follow toggle button aligned to the right so name doesn't shift */}
+
                   <div className="flex items-center gap-3">
                     {getCookie('id') !== friendIdParam && (
                       <button

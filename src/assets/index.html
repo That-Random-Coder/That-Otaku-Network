@@ -156,7 +156,7 @@
       const getToken = () => {
         const t = document.getElementById("token").value.trim();
         if (!t) return {};
-        // Auto-prepend "Bearer " if missing
+
         const token = t.startsWith("Bearer ") ? t : `Bearer ${t}`;
         return { Authorization: token };
       };
@@ -190,7 +190,7 @@
         out.innerHTML = html;
       }
 
-      // Create user
+
       document
         .getElementById("createForm")
         .addEventListener("submit", async (e) => {
@@ -248,7 +248,7 @@
           }
         });
 
-      // Get user
+
       document.getElementById("btnGet").addEventListener("click", async () => {
         const id = document.getElementById("getId").value.trim();
         if (!id) {
@@ -275,7 +275,7 @@
         }
       });
 
-      // Upload image
+
       document
         .getElementById("btnUploadImage")
         .addEventListener("click", async () => {
@@ -315,7 +315,7 @@
           }
         });
 
-      // Update profile (PUT)
+
       document
         .getElementById("updateForm")
         .addEventListener("submit", async (e) => {
@@ -365,7 +365,7 @@
           }
         });
 
-      // Follow / Unfollow
+
       document
         .getElementById("btnFollow")
         .addEventListener("click", async () => {

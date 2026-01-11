@@ -9,7 +9,7 @@ const getCookie = (name) => {
   return match ? decodeURIComponent(match[1]) : ''
 }
 
-// Simple accent-aware spinner
+
 const Spinner = ({ size = 40, accent = {} }) => (
   <div style={{ width: size, height: size }} className="flex items-center justify-center">
     <svg viewBox="0 0 50 50" className="animate-spin" style={{ width: size, height: size }}>
@@ -38,7 +38,7 @@ export default function UserPostsGrid({ profileUserId, accent = {} }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // reset when profile changes
+
     setPosts([])
     setPage(0)
     setHasMore(true)
@@ -52,11 +52,11 @@ export default function UserPostsGrid({ profileUserId, accent = {} }) {
       setError('')
       try {
         const url = `${import.meta.env.VITE_API_BASE_URL}content/content/user?userId=${encodeURIComponent(profileUserId || '')}&currentUserId=${encodeURIComponent(currentUserId || '')}&page=${p}&includeMedia=true&size=${BATCH_SIZE}`
-        // Use AccessToken cookie explicitly as Bearer token
+
         const tokenRaw = getCookie('AccessToken') || ''
         const auth = tokenRaw ? (tokenRaw.toLowerCase().startsWith('bearer ') ? tokenRaw : `Bearer ${tokenRaw}`) : ''
         const headers = auth ? { Authorization: auth, AccessToken: tokenRaw } : {}
-        // Debug: output the exact API URL and whether an auth token was found, and show headers
+
         try {
           console.log('[UserPostsGrid] fetching URL:', url)
           console.log('[UserPostsGrid] authPresent:', !!auth, 'headers:', headers)
@@ -69,12 +69,12 @@ export default function UserPostsGrid({ profileUserId, accent = {} }) {
           throw new Error(parsed.message || 'Failed to fetch posts')
         }
         const arr = Array.isArray(body?.content) ? body.content : []
-        // append
+
         setPosts((prev) => ([ ...prev, ...arr ]))
         const totalPages = Number(body?.totalPages || body?.pageable?.totalPages || 0)
         const number = Number(body?.number ?? body?.pageable?.pageNumber ?? p)
         console.log('[UserPostsGrid] fetched items:', arr.length, 'page:', number, 'totalPages:', totalPages)
-        // If backend provides totalPages use it, otherwise infer hasMore from batch size
+
         const more = totalPages > 0 ? (number + 1 < Math.max(1, totalPages)) : (arr.length >= BATCH_SIZE)
         setHasMore(more)
       } catch (e) {
@@ -97,7 +97,7 @@ export default function UserPostsGrid({ profileUserId, accent = {} }) {
     const obs = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting && !loading && hasMore) {
-          // Only advance page after a full batch has been displayed
+
           if (posts.length >= (page + 1) * BATCH_SIZE) {
             setPage((p) => p + 1)
           }
@@ -108,7 +108,7 @@ export default function UserPostsGrid({ profileUserId, accent = {} }) {
     return () => obs.disconnect()
   }, [sentinelRef.current, loading, hasMore, posts, page])
 
-  // RemoteMedia helper: fetch remote http(s) media, convert data: URIs and raw base64 payloads to Blobs and use object URLs to avoid embedding huge data URIs
+
   const RemoteMedia = ({ src, mediaType = '' }) => {
     const [objUrl, setObjUrl] = useState(null)
     const [loaded, setLoaded] = useState(false)
@@ -223,10 +223,10 @@ export default function UserPostsGrid({ profileUserId, accent = {} }) {
           >
             {renderMedia(item)}
             <div className="absolute inset-0 pointer-events-none">
-              {/* subtle backdrop on hover */}
+
               <div className="absolute inset-0 transition group-hover:bg-black/30" />
 
-              {/* Centered actions with non-interactive metrics */}
+
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
                 <div className="flex items-center gap-6 opacity-0 transform scale-95 transition-all duration-150 group-hover:opacity-100 group-hover:scale-100 pointer-events-auto">
                   <div className="flex flex-col items-center gap-2">
@@ -255,10 +255,10 @@ export default function UserPostsGrid({ profileUserId, accent = {} }) {
                 </div>
               </div>
 
-              {/* Bottom-right share icon with count (appears on hover) */}
+
               <div className="absolute bottom-2 right-2 opacity-0 transition group-hover:opacity-100 pointer-events-auto z-20 flex items-center gap-2">
                 <span className="text-base font-semibold text-white pointer-events-none">{item.shareCount || 0}</span>
-                <button type="button" onClick={(e) => { e.stopPropagation(); /* best-effort share: copy URL */ try { navigator.clipboard?.writeText(window.location.origin + `/post/${item.id}`) } catch (err) {} }} className="rounded-md bg-white/8 p-2 hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-white/20">
+                <button type="button" onClick={(e) => { e.stopPropagation();  try { navigator.clipboard?.writeText(window.location.origin + `/post/${item.id}`) } catch (err) {} }} className="rounded-md bg-white/8 p-2 hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-white/20">
                   <Share2 className="h-4 w-4 text-white" />
                 </button>
               </div>

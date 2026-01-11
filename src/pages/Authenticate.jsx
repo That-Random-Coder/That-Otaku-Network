@@ -406,7 +406,7 @@ function Authenticate() {
       setApiFeedback('info', 'Check your email for the 6-digit code')
       setCodeDigits(Array(6).fill(''))
     } catch (error) {
-      // Prefer structured API validation errors array, map to form fields
+
       const body = error?.response?.data
       if (Array.isArray(body) && body.length) {
         const map = {}
@@ -446,7 +446,7 @@ function Authenticate() {
       .post('/auth/public/login', { identifier, password })
       .then((response) => {
         storeSession(response?.data || {})
-        // Set displayName cookie if available in response (defensive)
+
         try {
           const d = response?.data?.displayName || response?.data?.displayname || response?.data?.user?.displayName || response?.data?.userName || ''
           if (d) document.cookie = `displayName=${encodeURIComponent(String(d))}; path=/; max-age=604800; SameSite=Lax`

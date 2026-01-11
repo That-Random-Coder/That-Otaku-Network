@@ -3,7 +3,7 @@ import { Search } from 'lucide-react'
 import accentOptions from '../theme/accentOptions.js'
 import { getSavedAccentKey } from '../theme/accentStorage.js'
 import NavigationBar from '../components/NavigationBar.jsx'
-import AlertBanner from '../components/AlertBanner.jsx' 
+import AlertBanner from '../components/AlertBanner.jsx'
 
 const getCookie = (name) => {
   if (typeof document === 'undefined') return ''
@@ -50,7 +50,7 @@ function Friends() {
       return () => controller.abort()
     }
 
-    // Debounce: wait 1 second after the last change before firing the fetch
+
     setIsWaiting(true)
     const timer = setTimeout(() => {
       setIsWaiting(false)
@@ -146,7 +146,7 @@ function Friends() {
                 </div>
                 <span className="text-sm font-semibold text-white/90">{searchMode === 'users' ? 'Find friends' : 'Find groups'}</span>
               </div>
-              {/* {isWaiting ? <span className="text-xs text-slate-200/75">Searching {searchMode === 'users' ? 'friends' : 'groups'}...</span> : loading && <span className="text-xs text-slate-200/75">Searching...</span>} */}
+
             </div>
 
             <div className="flex items-center gap-3 rounded-2xl border border-white/15 bg-black/30 px-3 py-2">
@@ -172,7 +172,7 @@ function Friends() {
                 <AlertBanner status="error" message={error} />
               </div>
             )}
-            {!error && !loading && searchTerm.trim() && results.length === 0 && <p className="mt-2 text-sm text-slate-200/85">{searchMode === 'users' ? 'No users found yet.' : 'No groups found yet.'}</p>} 
+            {!error && !loading && searchTerm.trim() && results.length === 0 && <p className="mt-2 text-sm text-slate-200/85">{searchMode === 'users' ? 'No users found yet.' : 'No groups found yet.'}</p>}
             {!searchTerm.trim() && <p className="mt-2 text-sm text-slate-200/80">{searchMode === 'users' ? 'Start typing to discover users.' : 'Start typing to find groups.'}</p>}
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">

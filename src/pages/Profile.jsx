@@ -12,7 +12,7 @@ import LoadingBar from 'react-top-loading-bar'
 import { CheckCircle2, ArrowLeft, Share2 } from 'lucide-react'
 import AlertBanner from '../components/AlertBanner.jsx'
 import clsx from 'clsx'
-import UserPostsGrid from '../components/UserPostsGrid.jsx' 
+import UserPostsGrid from '../components/UserPostsGrid.jsx'
 
 
 const getCookie = (name) => {
@@ -31,7 +31,7 @@ function Profile() {
   const [showAccentLoader, setShowAccentLoader] = useState(false)
   const [pendingAccent, setPendingAccent] = useState(null)
 
-  // Persist accentKey changes
+
   useEffect(() => {
     persistAccentKey(accentKey)
   }, [accentKey])
@@ -40,14 +40,14 @@ function Profile() {
   const loaderTimerRef = useRef(null)
   const topLoaderRef = useRef(null)
 
-  // motion preference helper (match other pages)
+
   const usePrefersReducedMotion = () => {
     if (typeof window === 'undefined') return false
     return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   }
   const motionSafe = !usePrefersReducedMotion()
 
-  // follower/following modal state
+
   const [showFollowersModal, setShowFollowersModal] = useState(false)
   const [showFollowingModal, setShowFollowingModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -56,7 +56,7 @@ function Profile() {
   const [loggingOut, setLoggingOut] = useState(false)
   const navigate = useNavigate()
 
-  // Show accent-change loader when accent is changed (same tab or other tabs)
+
   useEffect(() => {
     let timer = null
     const startLoader = () => {
@@ -81,16 +81,16 @@ function Profile() {
     }
   }, [])
 
-  // Edit profile save handler — parent will perform API call and show top loader
+
   const handleEditSave = async (payload) => {
     const uid = getCookie('userId') || getCookie('id')
     if (!uid) {
-      // you are not logged in
+
       return
     }
 
     try {
-      // start top loader
+
       topLoaderRef.current?.continuousStart()
 
       const tokenRaw = getCookie('AccessToken') || localStorage.getItem('AccessToken') || ''
@@ -113,19 +113,19 @@ function Profile() {
 
       const data = await res.json().catch(() => ({}))
 
-      // complete loader
+
       topLoaderRef.current?.complete()
 
-      // update profile locally
+
       setProfile((prev) => prev ? ({ ...prev, ...payload }) : prev)
 
-      // persist displayName cookie if changed
+
       try { if (payload?.displayName) document.cookie = `displayName=${encodeURIComponent(String(payload.displayName))}; path=/; max-age=604800; SameSite=Lax` } catch (e) {}
 
-      // close modal
+
       setShowEditModal(false)
 
-      // success banner
+
       try { setAlertBanner({ status: 'success', message: 'Profile updated Successfully' }); setTimeout(() => setAlertBanner({ status: '', message: '' }), 5000) } catch (e) {}
     } catch (e) {
       topLoaderRef.current?.complete()
@@ -135,7 +135,7 @@ function Profile() {
 
   const handleAccentSelect = (key) => {
     if (key === accentKey) return
-    // If already pending for same key, ignore
+
     if (pendingTimerRef.current) {
       clearTimeout(pendingTimerRef.current)
       pendingTimerRef.current = null
@@ -144,12 +144,12 @@ function Profile() {
     console.debug('[profile] accent select clicked', key, Date.now())
     setPendingAccent(key)
 
-    // show loader immediately (independent from persist timing)
+
     setShowAccentLoader(true)
     if (loaderTimerRef.current) clearTimeout(loaderTimerRef.current)
     loaderTimerRef.current = setTimeout(() => setShowAccentLoader(false), 2000)
 
-    // delay the actual accent change by 0.5 seconds
+
     pendingTimerRef.current = setTimeout(() => {
       console.debug('[profile] applying accent', key, Date.now())
       setAccentKey(key)
@@ -200,12 +200,12 @@ function Profile() {
           profileImg: p.profileImg ? `data:image/jpeg;base64,${p.profileImg}` : '',
           isVerified: !!p.isVerified,
         })
-        // Persist displayName cookie so it's available to other pages/components
+
         try { const dn = p.displayName || ''; if (dn) document.cookie = `displayName=${encodeURIComponent(String(dn))}; path=/; max-age=604800; SameSite=Lax` } catch (e) {}
       })
       .catch((err) => setError(err.message || 'Failed to fetch profile.'))
       .finally(() => setLoading(false))
-    // --- end of useEffect
+
   }, [accentKey])
 
   const cookieUserId = getCookie('id') || getCookie('userId') || ''
@@ -246,7 +246,7 @@ function Profile() {
             </button>
           </div>
         </header>
-        {/* Mobile-only settings block (shown inside content area) */}
+
         {showSettings && (
           <div className="mt-8 w-full max-w-xl mx-auto rounded-3xl border border-white/10 bg-white/10 p-6 shadow-lg backdrop-blur-2xl flex flex-col gap-6 md:hidden">
             <div className="flex items-center justify-between">
@@ -305,12 +305,12 @@ function Profile() {
           </div>
         )}
 
-            {/* Mount posts grid immediately so it can fetch on page load */}
-           
+
+
             <AlertBanner status="error" message={error} />
           {profile && !loading && !error && (
             <>
-              {/* Mobile — revert to old centered layout */}
+
               <div className="block md:hidden mt-6">
                 <div className="w-full max-w-xl rounded-3xl border border-white/10 bg-white/5 p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl flex flex-col items-center gap-6">
                   <div className="relative flex flex-col items-center">
@@ -335,7 +335,7 @@ function Profile() {
 
                     <span className="text-sm text-slate-300/80">@{profile.username}</span>
 
-                    {/* Mobile-only Share button placed under username, above counts */}
+
                     <div className="mt-2 flex justify-center md:hidden">
                       <button
                         type="button"
@@ -379,13 +379,13 @@ function Profile() {
                   {profile.location && <p className="text-sm text-slate-300/80">{profile.location}</p>}
                 </div>
               </div>
-              
 
-              {/* Desktop — Instagram-style layout (unchanged) */}
+
+
               <div className="hidden md:block mt-6">
                 <div className="w-full max-w-4xl rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
                   <div className="flex flex-col sm:flex-row sm:items-start gap-6">
-                    {/* Avatar column */}
+
                     <div className="flex-shrink-0">
                       <div className="h-36 w-36 rounded-full border-4 border-white/20 bg-black/30 overflow-hidden shadow-lg">
                         {profile.profileImg ? (
@@ -395,9 +395,9 @@ function Profile() {
                         )}
                       </div>
                     </div>
-                    
 
-                    {/* Info column */}
+
+
                     <div className="flex-1">
                       <div className="flex items-start gap-4 md:gap-12">
                         <div>
@@ -444,7 +444,7 @@ function Profile() {
                         </div>
                       </div>
 
-                      {/* Bio and location */}
+
                       {profile.bio && <p className="mt-4 text-base text-slate-200/90">{profile.bio}</p>}
                       {profile.location && <p className="mt-2 text-sm text-slate-300/80">{profile.location}</p>}
                     </div>
@@ -457,7 +457,7 @@ function Profile() {
             </>)}
 
 
-              {/* Fixed desktop right rail for Settings (matches left nav feel) */}
+
               <div className={`hidden md:flex md:flex-col md:fixed md:right-6 md:top-6 md:w-64 z-40 ${showSettings ? '' : 'pointer-events-none opacity-0'}`}>
                 {showSettings && (
                   <div className="flex flex-col h-full rounded-3xl bg-black/70 border border-white/10 p-4 shadow-[0_18px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl md:sticky md:top-6 md:self-start">
