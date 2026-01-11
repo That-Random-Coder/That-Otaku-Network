@@ -1,4 +1,4 @@
-# That Otaku Network — Frontend
+# That Otaku Network - Frontend
 
 A focused React app built with Vite for a small anime-focused social network. This repository contains the frontend: a polished single-page app with feed, groups, profiles, post composer, and social interactions like likes/dislikes, comments, and sharing.
 
