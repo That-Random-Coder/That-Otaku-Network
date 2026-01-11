@@ -1,0 +1,291 @@
+services:
+  api-gateway:
+    image: magician05/api-gateway:latest
+    container_name: api-gateway
+    environment:
+      SECURITY_JWT_SECRET: AVx9KQp7mT3ZrE2Wn8YFJHcL5B0uD4aS6GkPqR1oI
+    ports:
+      - "11111:11111"
+    networks:
+      - anime-verse-network
+
+  # auth-database:
+  # image: postgres:16
+  # container_name: auth-database
+  # environment:
+  #   POSTGRES_DB: anime-verse
+  #   POSTGRES_USER: anime-verse
+  #   POSTGRES_PASSWORD: anime-verse
+  # volumes:
+  #   - auth-db:/var/lib/postgresql/data
+  # networks:
+  #   - anime-verse-network
+
+  # auth-service:
+  # image: magician05/authenication-service:latest
+  # container_name: auth-service
+  # depends_on:
+  #   - auth-database
+  #   - kafka
+  #   - auth-redis
+
+  # environment:
+  #   SPRING_DATASOURCE_URL: jdbc:postgresql://auth-database:5432/anime-verse
+  #   SPRING_DATASOURCE_USERNAME: anime-verse
+  #   SPRING_DATASOURCE_PASSWORD: anime-verse
+  #   SPRING_JPA_SHOW_SQL: "true"
+  #   SPRING_JPA_HIBERNATE_DDL_AUTO: create
+  #   SECURITY_JWT_SECRET: AVx9KQp7mT3ZrE2Wn8YFJHcL5B0uD4aS6GkPqR1oI
+
+  #   SPRING_REDIS_HOST: auth-redis
+  #   SPRING_REDIS_PORT: 6379
+  #   KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  #   SPRINGDOC_SWAGGER_UI_CONFIG_URL: /api/auth/v3/api-docs/swagger-config
+  #   SPRINGDOC_SWAGGER_UI_URL: /api/auth/v3/api-docs
+
+  # networks:
+  #   - anime-verse-network
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "12312:8080"
+
+    networks:
+      - anime-verse-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - anime-verse-network
+    ports:
+      - 2181:2181
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "kafka-broker-api-versions",
+          "--bootstrap-server",
+          "localhost:9092",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      - anime-verse-network
+    ports:
+      - 9092:9092
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+  # # auth-redis:
+  #   image: redis:7.2-alpine
+  #   container_name: auth-redis
+  #   command: redis-server --appendonly yes
+  #   volumes:
+  #     - auth_redis_data:/data
+
+  #   networks:
+  #     - anime-verse-network
+
+  # # notification-service:
+  #   image: magician05/notification-service:latest
+  #   container_name: notification-service
+
+  #   depends_on:
+  #     - kafka
+
+  #   environment:
+  #     KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+  #     SPRING_MAIL_USERNAME: "xxxxxxx@gmail.com" # Gmail ID
+  #     SPRING_MAIL_PASSWORD: "xxx xxxx xxx xxx xxx" # Gmail App password
+
+  #   networks:
+  #     - anime-verse-network
+
+  # # search-service:
+  # #   image: magician05/search-service:latest
+  # #   container_name: search-service
+  # #   depends_on:
+  # #     elasticsearch:
+  # #       condition: service_started
+  # #     kafka:
+  # #       condition: service_healthy
+  # #   restart: unless-stopped
+
+  # #   environment:
+  # #     SPRING_ELASTICSEARCH_URIS: http://elasticsearch:9200
+  # #     SPRING_ELASTICSEARCH_CONNECTION_TIMEOUT: 5s
+  # #     SPRING_ELASTICSEARCH_SOCKET_TIMEOUT: 10s
+  # #     SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  # #   networks:
+  # #     - anime-verse-network
+
+  # # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:9.2.2
+  #   container_name: elasticsearch
+  #   environment:
+  #     - discovery.type=single-node
+  #     - xpack.security.enabled=true
+  #     - xpack.security.http.ssl.enabled=false
+  #     - xpack.security.transport.ssl.enabled=false
+  #     - ELASTIC_PASSWORD=elastic_password_123
+  #     - ES_JAVA_OPTS=-Xms512m -Xmx512m
+
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+
+  #   volumes:
+  #     - es-data:/usr/share/elasticsearch/data
+
+  #   networks:
+  #     - anime-verse-network
+
+  user-service:
+    image: magician05/user-service:latest
+    container_name: user-service
+    depends_on:
+      user-database:
+        condition: service_started
+      user-redis:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-database:5432/anime_verse
+      SPRING_DATASOURCE_USERNAME: anime_verse
+      SPRING_DATASOURCE_PASSWORD: anime_verse
+      SPRING_REDIS_HOST: user-redis
+      SPRING_REDIS_PORT: 6379
+    networks:
+      - anime-verse-network
+
+  user-database:
+    image: postgres:16
+    container_name: user-database
+    environment:
+      POSTGRES_DB: anime_verse
+      POSTGRES_USER: anime_verse
+      POSTGRES_PASSWORD: anime_verse
+    volumes:
+      - user-db:/var/lib/postgresql/data
+    networks:
+      - anime-verse-network
+
+  user-redis:
+    image: redis:7.2-alpine
+    container_name: user-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - user_redis_data:/data
+
+    networks:
+      - anime-verse-network
+
+  content-database:
+    image: postgres:16
+    container_name: content-database
+    environment:
+      POSTGRES_DB: anime_verse
+      POSTGRES_USER: anime_verse
+      POSTGRES_PASSWORD: anime_verse
+    volumes:
+      - content-db:/var/lib/postgresql/data
+    networks:
+      - anime-verse-network
+
+  content-redis:
+    image: redis:7.2-alpine
+    container_name: content-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - content_redis_data:/data
+    networks:
+      - anime-verse-network
+
+  content-service:
+    image: magician05/content-service:latest
+    container_name: content-service
+    depends_on:
+      - content-database
+      - content-redis
+      - kafka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://content-database:5432/anime_verse
+      SPRING_DATASOURCE_USERNAME: anime_verse
+      SPRING_DATASOURCE_PASSWORD: anime_verse
+      SPRING_REDIS_HOST: content-redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    networks:
+      - anime-verse-network
+
+  # recommendation-db:
+  #   image: postgres:16
+  #   container_name: recommendation-db
+  #   environment:
+  #     POSTGRES_DB: anime_verse
+  #     POSTGRES_USER: anime_verse
+  #     POSTGRES_PASSWORD: anime_verse
+  #   volumes:
+  #     - recommendation-db:/var/lib/postgresql/data
+  #   networks:
+  #     - anime-verse-network
+
+  # # recommendation-service:
+  #   image: magician05/recommendation-service:latest
+  #   container_name: recommendation-service
+
+  #   depends_on:
+  #     - recommendation-db
+
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://recommendation-db:5432/anime_verse
+  #     SPRING_DATASOURCE_USERNAME: anime_verse
+  #     SPRING_DATASOURCE_PASSWORD: anime_verse
+  #     SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  #   networks:
+  #     - anime-verse-network
+
+networks:
+  anime-verse-network:
+    driver: bridge
+
+volumes:
+  neo4j_data:
+  auth-db:
+  user-db:
+  content-db:
+  auth_redis_data:
+  content_redis_data:
+  zookeeper-data:
+  zookeeper-log:
+  kafka-data:
+  es-data:
+  user_redis_data:
+  recommendation-db:

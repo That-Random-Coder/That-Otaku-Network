@@ -1,0 +1,2773 @@
+{
+ "Resources": {
+  "AnimeVerseVPC9F6762D3": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "AnimeVerseVPC"
+     }
+    ]
+   }
+  },
+  "AnimeVerseVPCPublicSubnet1SubnetDC370151": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.0.0/18",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "AnimeVerseVPCPublicSubnet1RouteTable57F85575": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "AnimeVerseVPCPublicSubnet1RouteTableAssociationA5C77D1E": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "AnimeVerseVPCPublicSubnet1RouteTable57F85575"
+    },
+    "SubnetId": {
+     "Ref": "AnimeVerseVPCPublicSubnet1SubnetDC370151"
+    }
+   }
+  },
+  "AnimeVerseVPCPublicSubnet1DefaultRoute713A12A0": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "AnimeVerseVPCIGW1758BB8C"
+    },
+    "RouteTableId": {
+     "Ref": "AnimeVerseVPCPublicSubnet1RouteTable57F85575"
+    }
+   },
+   "DependsOn": [
+    "AnimeVerseVPCVPCGWD92B2869"
+   ]
+  },
+  "AnimeVerseVPCPublicSubnet1EIPB535ABF2": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PublicSubnet1"
+     }
+    ]
+   }
+  },
+  "AnimeVerseVPCPublicSubnet1NATGatewayF01669A6": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "AnimeVerseVPCPublicSubnet1EIPB535ABF2",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "AnimeVerseVPCPublicSubnet1SubnetDC370151"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PublicSubnet1"
+     }
+    ]
+   },
+   "DependsOn": [
+    "AnimeVerseVPCPublicSubnet1DefaultRoute713A12A0",
+    "AnimeVerseVPCPublicSubnet1RouteTableAssociationA5C77D1E"
+   ]
+  },
+  "AnimeVerseVPCPublicSubnet2SubnetF5B9380D": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      1,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.64.0/18",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "AnimeVerseVPCPublicSubnet2RouteTableB5DDC601": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "AnimeVerseVPCPublicSubnet2RouteTableAssociationF526CA6B": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "AnimeVerseVPCPublicSubnet2RouteTableB5DDC601"
+    },
+    "SubnetId": {
+     "Ref": "AnimeVerseVPCPublicSubnet2SubnetF5B9380D"
+    }
+   }
+  },
+  "AnimeVerseVPCPublicSubnet2DefaultRoute717DFA33": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "AnimeVerseVPCIGW1758BB8C"
+    },
+    "RouteTableId": {
+     "Ref": "AnimeVerseVPCPublicSubnet2RouteTableB5DDC601"
+    }
+   },
+   "DependsOn": [
+    "AnimeVerseVPCVPCGWD92B2869"
+   ]
+  },
+  "AnimeVerseVPCPublicSubnet2EIP7855594F": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PublicSubnet2"
+     }
+    ]
+   }
+  },
+  "AnimeVerseVPCPublicSubnet2NATGateway8253C3D6": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "AnimeVerseVPCPublicSubnet2EIP7855594F",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "AnimeVerseVPCPublicSubnet2SubnetF5B9380D"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PublicSubnet2"
+     }
+    ]
+   },
+   "DependsOn": [
+    "AnimeVerseVPCPublicSubnet2DefaultRoute717DFA33",
+    "AnimeVerseVPCPublicSubnet2RouteTableAssociationF526CA6B"
+   ]
+  },
+  "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.128.0/18",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "AnimeVerseVPCPrivateSubnet1RouteTableEFB84B5A": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "AnimeVerseVPCPrivateSubnet1RouteTableAssociationE951B947": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "AnimeVerseVPCPrivateSubnet1RouteTableEFB84B5A"
+    },
+    "SubnetId": {
+     "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+    }
+   }
+  },
+  "AnimeVerseVPCPrivateSubnet1DefaultRoute89E7E79A": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "AnimeVerseVPCPublicSubnet1NATGatewayF01669A6"
+    },
+    "RouteTableId": {
+     "Ref": "AnimeVerseVPCPrivateSubnet1RouteTableEFB84B5A"
+    }
+   }
+  },
+  "AnimeVerseVPCPrivateSubnet2Subnet5023AB71": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      1,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.192.0/18",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "AnimeVerseVPCPrivateSubnet2RouteTable3278CD98": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localstack/AnimeVerseVPC/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "AnimeVerseVPCPrivateSubnet2RouteTableAssociation85823F86": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "AnimeVerseVPCPrivateSubnet2RouteTable3278CD98"
+    },
+    "SubnetId": {
+     "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+    }
+   }
+  },
+  "AnimeVerseVPCPrivateSubnet2DefaultRouteEA1461B8": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "AnimeVerseVPCPublicSubnet2NATGateway8253C3D6"
+    },
+    "RouteTableId": {
+     "Ref": "AnimeVerseVPCPrivateSubnet2RouteTable3278CD98"
+    }
+   }
+  },
+  "AnimeVerseVPCIGW1758BB8C": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "AnimeVerseVPC"
+     }
+    ]
+   }
+  },
+  "AnimeVerseVPCVPCGWD92B2869": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "AnimeVerseVPCIGW1758BB8C"
+    },
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "AuthServiceDBSubnetGroupCFE5A552": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for AuthServiceDB database",
+    "SubnetIds": [
+     {
+      "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+     },
+     {
+      "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+     }
+    ]
+   }
+  },
+  "AuthServiceDBSecurityGroupBE6D28EB": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for AuthServiceDB database",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "localstackAuthServiceDBSecretE93C53FD3fdaad7efa858a3daf9490cf0a702aeb": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"admin_user\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "AuthServiceDBSecretAttachmentF30406A9": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "localstackAuthServiceDBSecretE93C53FD3fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    "TargetId": {
+     "Ref": "AuthServiceDBC6B688BA"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   }
+  },
+  "AuthServiceDBC6B688BA": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "20",
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t2.micro",
+    "DBName": "auth-database",
+    "DBSubnetGroupName": {
+     "Ref": "AuthServiceDBSubnetGroupCFE5A552"
+    },
+    "Engine": "postgres",
+    "EngineVersion": "17.2",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "localstackAuthServiceDBSecretE93C53FD3fdaad7efa858a3daf9490cf0a702aeb"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": "admin_user",
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "AuthServiceDBSecurityGroupBE6D28EB",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "ProfileServiceDBSubnetGroupB0052912": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for ProfileServiceDB database",
+    "SubnetIds": [
+     {
+      "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+     },
+     {
+      "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+     }
+    ]
+   }
+  },
+  "ProfileServiceDBSecurityGroup29B27103": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for ProfileServiceDB database",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "localstackProfileServiceDBSecretBFF158B13fdaad7efa858a3daf9490cf0a702aeb": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"admin_user\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "ProfileServiceDBSecretAttachmentBC0087A7": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "localstackProfileServiceDBSecretBFF158B13fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    "TargetId": {
+     "Ref": "ProfileServiceDB7B759CD2"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   }
+  },
+  "ProfileServiceDB7B759CD2": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "20",
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t2.micro",
+    "DBName": "user-database",
+    "DBSubnetGroupName": {
+     "Ref": "ProfileServiceDBSubnetGroupB0052912"
+    },
+    "Engine": "postgres",
+    "EngineVersion": "17.2",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "localstackProfileServiceDBSecretBFF158B13fdaad7efa858a3daf9490cf0a702aeb"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": "admin_user",
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "ProfileServiceDBSecurityGroup29B27103",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "ContentServiceDBSubnetGroup0C1697F0": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for ContentServiceDB database",
+    "SubnetIds": [
+     {
+      "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+     },
+     {
+      "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+     }
+    ]
+   }
+  },
+  "ContentServiceDBSecurityGroup5F26DE72": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for ContentServiceDB database",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "localstackContentServiceDBSecretA6771C983fdaad7efa858a3daf9490cf0a702aeb": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"admin_user\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "ContentServiceDBSecretAttachmentF76788E7": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "localstackContentServiceDBSecretA6771C983fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    "TargetId": {
+     "Ref": "ContentServiceDB57D86035"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   }
+  },
+  "ContentServiceDB57D86035": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "20",
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t2.micro",
+    "DBName": "content-database",
+    "DBSubnetGroupName": {
+     "Ref": "ContentServiceDBSubnetGroup0C1697F0"
+    },
+    "Engine": "postgres",
+    "EngineVersion": "17.2",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "localstackContentServiceDBSecretA6771C983fdaad7efa858a3daf9490cf0a702aeb"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": "admin_user",
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "ContentServiceDBSecurityGroup5F26DE72",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "RecommendationServiceDBSubnetGroup4DD7F19B": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for RecommendationServiceDB database",
+    "SubnetIds": [
+     {
+      "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+     },
+     {
+      "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+     }
+    ]
+   }
+  },
+  "RecommendationServiceDBSecurityGroup292E6E87": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for RecommendationServiceDB database",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "localstackRecommendationServiceDBSecret220BF8373fdaad7efa858a3daf9490cf0a702aeb": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"admin_user\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "RecommendationServiceDBSecretAttachment52ADF740": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "localstackRecommendationServiceDBSecret220BF8373fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    "TargetId": {
+     "Ref": "RecommendationServiceDBE35C0757"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   }
+  },
+  "RecommendationServiceDBE35C0757": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "20",
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t2.micro",
+    "DBName": "recommendation-db",
+    "DBSubnetGroupName": {
+     "Ref": "RecommendationServiceDBSubnetGroup4DD7F19B"
+    },
+    "Engine": "postgres",
+    "EngineVersion": "17.2",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "localstackRecommendationServiceDBSecret220BF8373fdaad7efa858a3daf9490cf0a702aeb"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": "admin_user",
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "RecommendationServiceDBSecurityGroup292E6E87",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "AuthServiceDBHealthCheck": {
+   "Type": "AWS::Route53::HealthCheck",
+   "Properties": {
+    "HealthCheckConfig": {
+     "FailureThreshold": 3,
+     "IPAddress": {
+      "Fn::GetAtt": [
+       "AuthServiceDBC6B688BA",
+       "Endpoint.Address"
+      ]
+     },
+     "Port": {
+      "Fn::GetAtt": [
+       "AuthServiceDBC6B688BA",
+       "Endpoint.Port"
+      ]
+     },
+     "RequestInterval": 30,
+     "Type": "TCP"
+    }
+   }
+  },
+  "ProfileServiceDBHealthCheck": {
+   "Type": "AWS::Route53::HealthCheck",
+   "Properties": {
+    "HealthCheckConfig": {
+     "FailureThreshold": 3,
+     "IPAddress": {
+      "Fn::GetAtt": [
+       "ProfileServiceDB7B759CD2",
+       "Endpoint.Address"
+      ]
+     },
+     "Port": {
+      "Fn::GetAtt": [
+       "ProfileServiceDB7B759CD2",
+       "Endpoint.Port"
+      ]
+     },
+     "RequestInterval": 30,
+     "Type": "TCP"
+    }
+   }
+  },
+  "ContentDBSeriveHealthCheck": {
+   "Type": "AWS::Route53::HealthCheck",
+   "Properties": {
+    "HealthCheckConfig": {
+     "FailureThreshold": 3,
+     "IPAddress": {
+      "Fn::GetAtt": [
+       "ContentServiceDB57D86035",
+       "Endpoint.Address"
+      ]
+     },
+     "Port": {
+      "Fn::GetAtt": [
+       "ContentServiceDB57D86035",
+       "Endpoint.Port"
+      ]
+     },
+     "RequestInterval": 30,
+     "Type": "TCP"
+    }
+   }
+  },
+  "RecommendationDBServiceHeathCheck": {
+   "Type": "AWS::Route53::HealthCheck",
+   "Properties": {
+    "HealthCheckConfig": {
+     "FailureThreshold": 3,
+     "IPAddress": {
+      "Fn::GetAtt": [
+       "RecommendationServiceDBE35C0757",
+       "Endpoint.Address"
+      ]
+     },
+     "Port": {
+      "Fn::GetAtt": [
+       "RecommendationServiceDBE35C0757",
+       "Endpoint.Port"
+      ]
+     },
+     "RequestInterval": 30,
+     "Type": "TCP"
+    }
+   }
+  },
+  "MskCluster": {
+   "Type": "AWS::MSK::Cluster",
+   "Properties": {
+    "BrokerNodeGroupInfo": {
+     "BrokerAZDistribution": "DEFAULT",
+     "ClientSubnets": [
+      {
+       "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+      },
+      {
+       "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+      }
+     ],
+     "InstanceType": "kafka.m5.xlarge"
+    },
+    "ClusterName": "kafka-cluster",
+    "KafkaVersion": "2.8.0",
+    "NumberOfBrokerNodes": 1
+   }
+  },
+  "AnimeVerseClusterAC9F77AF": {
+   "Type": "AWS::ECS::Cluster"
+  },
+  "AnimeVerseClusterDefaultServiceDiscoveryNamespace6BF3A39E": {
+   "Type": "AWS::ServiceDiscovery::PrivateDnsNamespace",
+   "Properties": {
+    "Name": "anime-verse.local",
+    "Vpc": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "AuthServiceTaskTaskRoleE466B974": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "AuthServiceTask82E6680D": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SECURITY_JWT_SECRET",
+        "Value": "AVx9KQp7mT3ZrE2Wn8YFJHcL5B0uD4aS6GkPqR1oI"
+       },
+       {
+        "Name": "SPRING_SQL_INIT_MODE",
+        "Value": "always"
+       },
+       {
+        "Name": "SPRING_REDIS_HOST",
+        "Value": "auth-redis"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_URL",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "jdbc:postgresql://",
+           {
+            "Fn::GetAtt": [
+             "AuthServiceDBC6B688BA",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "AuthServiceDBC6B688BA",
+             "Endpoint.Port"
+            ]
+           },
+           "/magician05/authenication-service:latest"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_DATASOURCE_PASSWORD",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "{{resolve:secretsmanager:",
+           {
+            "Ref": "AuthServiceDBSecretAttachmentF30406A9"
+           },
+           ":SecretString:password::}}"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+        "Value": "update"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT",
+        "Value": "60000"
+       },
+       {
+        "Name": "SPRING_REDIS_PORT",
+        "Value": "6379"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_USERNAME",
+        "Value": "admin_user"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       }
+      ],
+      "Essential": true,
+      "Image": "magician05/authenication-service:latest",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "AuthServiceLogGroup34125B38"
+        },
+        "awslogs-stream-prefix": "magician05/authenication-service:latest",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "magician05--authenication-service:latestContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 8080,
+        "HostPort": 8080,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "AuthServiceTaskExecutionRoleA1258495",
+      "Arn"
+     ]
+    },
+    "Family": "localstackAuthServiceTask4114E6CA",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "AuthServiceTaskTaskRoleE466B974",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "AuthServiceTaskExecutionRoleA1258495": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "AuthServiceTaskExecutionRoleDefaultPolicyF20AD0D3": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "AuthServiceLogGroup34125B38",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AuthServiceTaskExecutionRoleDefaultPolicyF20AD0D3",
+    "Roles": [
+     {
+      "Ref": "AuthServiceTaskExecutionRoleA1258495"
+     }
+    ]
+   }
+  },
+  "AuthServiceLogGroup34125B38": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/magician05/authenication-service:latest",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "AuthService3C2B741A": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "AnimeVerseClusterAC9F77AF"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "AuthServiceSecurityGroup67F2FA7D",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+       },
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+       }
+      ]
+     }
+    },
+    "ServiceName": "magician05/authenication-service:latest",
+    "TaskDefinition": {
+     "Ref": "AuthServiceTask82E6680D"
+    }
+   },
+   "DependsOn": [
+    "AuthServiceDBC6B688BA",
+    "AuthServiceDBSecretAttachmentF30406A9",
+    "localstackAuthServiceDBSecretE93C53FD3fdaad7efa858a3daf9490cf0a702aeb",
+    "AuthServiceDBSecurityGroupBE6D28EB",
+    "AuthServiceDBSubnetGroupCFE5A552",
+    "AuthServiceDBHealthCheck",
+    "AuthServiceTaskTaskRoleE466B974"
+   ]
+  },
+  "AuthServiceSecurityGroup67F2FA7D": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localstack/AuthService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   },
+   "DependsOn": [
+    "AuthServiceDBC6B688BA",
+    "AuthServiceDBSecretAttachmentF30406A9",
+    "localstackAuthServiceDBSecretE93C53FD3fdaad7efa858a3daf9490cf0a702aeb",
+    "AuthServiceDBSecurityGroupBE6D28EB",
+    "AuthServiceDBSubnetGroupCFE5A552",
+    "AuthServiceDBHealthCheck",
+    "AuthServiceTaskTaskRoleE466B974"
+   ]
+  },
+  "UserServiceTaskTaskRole3959F240": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "UserServiceTaskCE24C7B8": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_SQL_INIT_MODE",
+        "Value": "always"
+       },
+       {
+        "Name": "SPRING_REDIS_HOST",
+        "Value": "user-redis"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_URL",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "jdbc:postgresql://",
+           {
+            "Fn::GetAtt": [
+             "ProfileServiceDB7B759CD2",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "ProfileServiceDB7B759CD2",
+             "Endpoint.Port"
+            ]
+           },
+           "/magician05/user-service:latest"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_DATASOURCE_PASSWORD",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "{{resolve:secretsmanager:",
+           {
+            "Ref": "ProfileServiceDBSecretAttachmentBC0087A7"
+           },
+           ":SecretString:password::}}"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+        "Value": "update"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT",
+        "Value": "60000"
+       },
+       {
+        "Name": "SPRING_REDIS_PORT",
+        "Value": "6379"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_USERNAME",
+        "Value": "admin_user"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       }
+      ],
+      "Essential": true,
+      "Image": "magician05/user-service:latest",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "UserServiceLogGroupF8D8E736"
+        },
+        "awslogs-stream-prefix": "magician05/user-service:latest",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "magician05--user-service:latestContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 8080,
+        "HostPort": 8080,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "UserServiceTaskExecutionRole35E26DAF",
+      "Arn"
+     ]
+    },
+    "Family": "localstackUserServiceTaskF7902988",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "UserServiceTaskTaskRole3959F240",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "UserServiceTaskExecutionRole35E26DAF": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "UserServiceTaskExecutionRoleDefaultPolicyFED51482": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "UserServiceLogGroupF8D8E736",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "UserServiceTaskExecutionRoleDefaultPolicyFED51482",
+    "Roles": [
+     {
+      "Ref": "UserServiceTaskExecutionRole35E26DAF"
+     }
+    ]
+   }
+  },
+  "UserServiceLogGroupF8D8E736": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/magician05/user-service:latest",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "UserServiceDFC9364A": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "AnimeVerseClusterAC9F77AF"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "UserServiceSecurityGroupF7F8526C",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+       },
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+       }
+      ]
+     }
+    },
+    "ServiceName": "magician05/user-service:latest",
+    "TaskDefinition": {
+     "Ref": "UserServiceTaskCE24C7B8"
+    }
+   },
+   "DependsOn": [
+    "ProfileServiceDB7B759CD2",
+    "ProfileServiceDBSecretAttachmentBC0087A7",
+    "localstackProfileServiceDBSecretBFF158B13fdaad7efa858a3daf9490cf0a702aeb",
+    "ProfileServiceDBSecurityGroup29B27103",
+    "ProfileServiceDBSubnetGroupB0052912",
+    "ProfileServiceDBHealthCheck",
+    "UserServiceTaskTaskRole3959F240"
+   ]
+  },
+  "UserServiceSecurityGroupF7F8526C": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localstack/UserService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   },
+   "DependsOn": [
+    "ProfileServiceDB7B759CD2",
+    "ProfileServiceDBSecretAttachmentBC0087A7",
+    "localstackProfileServiceDBSecretBFF158B13fdaad7efa858a3daf9490cf0a702aeb",
+    "ProfileServiceDBSecurityGroup29B27103",
+    "ProfileServiceDBSubnetGroupB0052912",
+    "ProfileServiceDBHealthCheck",
+    "UserServiceTaskTaskRole3959F240"
+   ]
+  },
+  "ContentServiceTaskTaskRole4E7B685C": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "ContentServiceTask9A734AE7": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_SQL_INIT_MODE",
+        "Value": "always"
+       },
+       {
+        "Name": "SPRING_REDIS_HOST",
+        "Value": "content-redis"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_URL",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "jdbc:postgresql://",
+           {
+            "Fn::GetAtt": [
+             "ContentServiceDB57D86035",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "ContentServiceDB57D86035",
+             "Endpoint.Port"
+            ]
+           },
+           "/magician05/content-service:latest"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_DATASOURCE_PASSWORD",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "{{resolve:secretsmanager:",
+           {
+            "Ref": "ContentServiceDBSecretAttachmentF76788E7"
+           },
+           ":SecretString:password::}}"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+        "Value": "update"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT",
+        "Value": "60000"
+       },
+       {
+        "Name": "SPRING_REDIS_PORT",
+        "Value": "6379"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_USERNAME",
+        "Value": "admin_user"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       }
+      ],
+      "Essential": true,
+      "Image": "magician05/content-service:latest",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "ContentServiceLogGroup02C7280B"
+        },
+        "awslogs-stream-prefix": "magician05/content-service:latest",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "magician05--content-service:latestContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 8080,
+        "HostPort": 8080,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "ContentServiceTaskExecutionRole9ED393D7",
+      "Arn"
+     ]
+    },
+    "Family": "localstackContentServiceTask4479420A",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "ContentServiceTaskTaskRole4E7B685C",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "ContentServiceTaskExecutionRole9ED393D7": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "ContentServiceTaskExecutionRoleDefaultPolicy41004C3C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ContentServiceLogGroup02C7280B",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ContentServiceTaskExecutionRoleDefaultPolicy41004C3C",
+    "Roles": [
+     {
+      "Ref": "ContentServiceTaskExecutionRole9ED393D7"
+     }
+    ]
+   }
+  },
+  "ContentServiceLogGroup02C7280B": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/magician05/content-service:latest",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "ContentServiceC418476C": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "AnimeVerseClusterAC9F77AF"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "ContentServiceSecurityGroupB7269117",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+       },
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+       }
+      ]
+     }
+    },
+    "ServiceName": "magician05/content-service:latest",
+    "TaskDefinition": {
+     "Ref": "ContentServiceTask9A734AE7"
+    }
+   },
+   "DependsOn": [
+    "ContentDBSeriveHealthCheck",
+    "ContentServiceDB57D86035",
+    "ContentServiceDBSecretAttachmentF76788E7",
+    "localstackContentServiceDBSecretA6771C983fdaad7efa858a3daf9490cf0a702aeb",
+    "ContentServiceDBSecurityGroup5F26DE72",
+    "ContentServiceDBSubnetGroup0C1697F0",
+    "ContentServiceTaskTaskRole4E7B685C"
+   ]
+  },
+  "ContentServiceSecurityGroupB7269117": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localstack/ContentService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   },
+   "DependsOn": [
+    "ContentDBSeriveHealthCheck",
+    "ContentServiceDB57D86035",
+    "ContentServiceDBSecretAttachmentF76788E7",
+    "localstackContentServiceDBSecretA6771C983fdaad7efa858a3daf9490cf0a702aeb",
+    "ContentServiceDBSecurityGroup5F26DE72",
+    "ContentServiceDBSubnetGroup0C1697F0",
+    "ContentServiceTaskTaskRole4E7B685C"
+   ]
+  },
+  "RecommendationServiceTaskTaskRoleE9366000": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "RecommendationServiceTaskC4F43291": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_SQL_INIT_MODE",
+        "Value": "always"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_URL",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "jdbc:postgresql://",
+           {
+            "Fn::GetAtt": [
+             "RecommendationServiceDBE35C0757",
+             "Endpoint.Address"
+            ]
+           },
+           ":",
+           {
+            "Fn::GetAtt": [
+             "RecommendationServiceDBE35C0757",
+             "Endpoint.Port"
+            ]
+           },
+           "/magician05/recommendation-service:latest"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_DATASOURCE_PASSWORD",
+        "Value": {
+         "Fn::Join": [
+          "",
+          [
+           "{{resolve:secretsmanager:",
+           {
+            "Ref": "RecommendationServiceDBSecretAttachment52ADF740"
+           },
+           ":SecretString:password::}}"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+        "Value": "update"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT",
+        "Value": "60000"
+       },
+       {
+        "Name": "SPRING_DATASOURCE_USERNAME",
+        "Value": "admin_user"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       }
+      ],
+      "Essential": true,
+      "Image": "magician05/recommendation-service:latest",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "RecommendationServiceLogGroup9D7BBC3A"
+        },
+        "awslogs-stream-prefix": "magician05/recommendation-service:latest",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "magician05--recommendation-service:latestContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 8080,
+        "HostPort": 8080,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "RecommendationServiceTaskExecutionRole50EBA53F",
+      "Arn"
+     ]
+    },
+    "Family": "localstackRecommendationServiceTask2A7DB3A8",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "RecommendationServiceTaskTaskRoleE9366000",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "RecommendationServiceTaskExecutionRole50EBA53F": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "RecommendationServiceTaskExecutionRoleDefaultPolicy329834B6": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "RecommendationServiceLogGroup9D7BBC3A",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "RecommendationServiceTaskExecutionRoleDefaultPolicy329834B6",
+    "Roles": [
+     {
+      "Ref": "RecommendationServiceTaskExecutionRole50EBA53F"
+     }
+    ]
+   }
+  },
+  "RecommendationServiceLogGroup9D7BBC3A": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/magician05/recommendation-service:latest",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "RecommendationServiceDE1783FB": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "AnimeVerseClusterAC9F77AF"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "RecommendationServiceSecurityGroup85BE57D0",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+       },
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+       }
+      ]
+     }
+    },
+    "ServiceName": "magician05/recommendation-service:latest",
+    "TaskDefinition": {
+     "Ref": "RecommendationServiceTaskC4F43291"
+    }
+   },
+   "DependsOn": [
+    "RecommendationDBServiceHeathCheck",
+    "RecommendationServiceDBE35C0757",
+    "RecommendationServiceDBSecretAttachment52ADF740",
+    "localstackRecommendationServiceDBSecret220BF8373fdaad7efa858a3daf9490cf0a702aeb",
+    "RecommendationServiceDBSecurityGroup292E6E87",
+    "RecommendationServiceDBSubnetGroup4DD7F19B",
+    "RecommendationServiceTaskTaskRoleE9366000"
+   ]
+  },
+  "RecommendationServiceSecurityGroup85BE57D0": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localstack/RecommendationService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   },
+   "DependsOn": [
+    "RecommendationDBServiceHeathCheck",
+    "RecommendationServiceDBE35C0757",
+    "RecommendationServiceDBSecretAttachment52ADF740",
+    "localstackRecommendationServiceDBSecret220BF8373fdaad7efa858a3daf9490cf0a702aeb",
+    "RecommendationServiceDBSecurityGroup292E6E87",
+    "RecommendationServiceDBSubnetGroup4DD7F19B",
+    "RecommendationServiceTaskTaskRoleE9366000"
+   ]
+  },
+  "NotificationServiceTaskTaskRole58BCD3DB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "NotificationServiceTask93BAB0D4": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_MAIL_USERNAME",
+        "Value": "xxxxxxx@gmail.com"
+       },
+       {
+        "Name": "SPRING_MAIL_PASSWORD",
+        "Value": "xxx xxxx xxx xxx xxx"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       }
+      ],
+      "Essential": true,
+      "Image": "magician05/notification-service:latest",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "NotificationServiceLogGroup3C875A22"
+        },
+        "awslogs-stream-prefix": "magician05/notification-service:latest",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "magician05--notification-service:latestContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 8080,
+        "HostPort": 8080,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "NotificationServiceTaskExecutionRole190B86DD",
+      "Arn"
+     ]
+    },
+    "Family": "localstackNotificationServiceTask213D4F39",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "NotificationServiceTaskTaskRole58BCD3DB",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "NotificationServiceTaskExecutionRole190B86DD": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "NotificationServiceTaskExecutionRoleDefaultPolicy8602E48E": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "NotificationServiceLogGroup3C875A22",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "NotificationServiceTaskExecutionRoleDefaultPolicy8602E48E",
+    "Roles": [
+     {
+      "Ref": "NotificationServiceTaskExecutionRole190B86DD"
+     }
+    ]
+   }
+  },
+  "NotificationServiceLogGroup3C875A22": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/magician05/notification-service:latest",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "NotificationService2154020D": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "AnimeVerseClusterAC9F77AF"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "NotificationServiceSecurityGroup76796F84",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+       },
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+       }
+      ]
+     }
+    },
+    "ServiceName": "magician05/notification-service:latest",
+    "TaskDefinition": {
+     "Ref": "NotificationServiceTask93BAB0D4"
+    }
+   },
+   "DependsOn": [
+    "NotificationServiceTaskTaskRole58BCD3DB"
+   ]
+  },
+  "NotificationServiceSecurityGroup76796F84": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localstack/NotificationService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   },
+   "DependsOn": [
+    "NotificationServiceTaskTaskRole58BCD3DB"
+   ]
+  },
+  "SearchServiceTaskTaskRoleBE948996": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "SearchServiceTask6811BECE": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_ELASTICSEARCH_URIS",
+        "Value": "http://localhost:9200"
+       },
+       {
+        "Name": "SPRING_KAFKA_BOOTSTRAP_SERVERS",
+        "Value": "localhost.localstack.cloud:4510, localhost.localstack.cloud:4511, localhost.localstack.cloud:4512"
+       }
+      ],
+      "Essential": true,
+      "Image": "magician05/search-service:latest",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "SearchServiceLogGroup2B9A3956"
+        },
+        "awslogs-stream-prefix": "magician05/search-service:latest",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "magician05--search-service:latestContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 8080,
+        "HostPort": 8080,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "SearchServiceTaskExecutionRole13971BB7",
+      "Arn"
+     ]
+    },
+    "Family": "localstackSearchServiceTask4D3FFF5F",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "SearchServiceTaskTaskRoleBE948996",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "SearchServiceTaskExecutionRole13971BB7": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "SearchServiceTaskExecutionRoleDefaultPolicy7C7F0DF5": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "SearchServiceLogGroup2B9A3956",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SearchServiceTaskExecutionRoleDefaultPolicy7C7F0DF5",
+    "Roles": [
+     {
+      "Ref": "SearchServiceTaskExecutionRole13971BB7"
+     }
+    ]
+   }
+  },
+  "SearchServiceLogGroup2B9A3956": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/magician05/search-service:latest",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "SearchService03BD244F": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "AnimeVerseClusterAC9F77AF"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "SearchServiceSecurityGroupCC8AEF92",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+       },
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+       }
+      ]
+     }
+    },
+    "ServiceName": "magician05/search-service:latest",
+    "TaskDefinition": {
+     "Ref": "SearchServiceTask6811BECE"
+    }
+   },
+   "DependsOn": [
+    "SearchServiceTaskTaskRoleBE948996"
+   ]
+  },
+  "SearchServiceSecurityGroupCC8AEF92": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localstack/SearchService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   },
+   "DependsOn": [
+    "SearchServiceTaskTaskRoleBE948996"
+   ]
+  },
+  "ApiGatewayTaskTaskRole067DCD80": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "ApiGatewayTask3752F926": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "SPRING_PROFILES_ACTIVE",
+        "Value": "prod"
+       }
+      ],
+      "Essential": true,
+      "Image": "api-gateway",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "ApiGatewayLogGroupA9770429"
+        },
+        "awslogs-stream-prefix": "api-gateway",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Name": "ApiGatewayContainer",
+      "PortMappings": [
+       {
+        "ContainerPort": 11111,
+        "HostPort": 11111,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "ApiGatewayTaskExecutionRoleEFC2C1CC",
+      "Arn"
+     ]
+    },
+    "Family": "localstackApiGatewayTask50AB2DC7",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "ApiGatewayTaskTaskRole067DCD80",
+      "Arn"
+     ]
+    }
+   }
+  },
+  "ApiGatewayTaskExecutionRoleEFC2C1CC": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   }
+  },
+  "ApiGatewayTaskExecutionRoleDefaultPolicy7DA205A3": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ApiGatewayLogGroupA9770429",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ApiGatewayTaskExecutionRoleDefaultPolicy7DA205A3",
+    "Roles": [
+     {
+      "Ref": "ApiGatewayTaskExecutionRoleEFC2C1CC"
+     }
+    ]
+   }
+  },
+  "ApiGatewayLogGroupA9770429": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/api-gateway",
+    "RetentionInDays": 1
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "apigatewayserviceLBAEB920C1": {
+   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+   "Properties": {
+    "LoadBalancerAttributes": [
+     {
+      "Key": "deletion_protection.enabled",
+      "Value": "false"
+     }
+    ],
+    "Scheme": "internet-facing",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "apigatewayserviceLBSecurityGroupB038CAFC",
+       "GroupId"
+      ]
+     }
+    ],
+    "Subnets": [
+     {
+      "Ref": "AnimeVerseVPCPublicSubnet1SubnetDC370151"
+     },
+     {
+      "Ref": "AnimeVerseVPCPublicSubnet2SubnetF5B9380D"
+     }
+    ],
+    "Type": "application"
+   },
+   "DependsOn": [
+    "AnimeVerseVPCPublicSubnet1DefaultRoute713A12A0",
+    "AnimeVerseVPCPublicSubnet1RouteTableAssociationA5C77D1E",
+    "AnimeVerseVPCPublicSubnet2DefaultRoute717DFA33",
+    "AnimeVerseVPCPublicSubnet2RouteTableAssociationF526CA6B"
+   ]
+  },
+  "apigatewayserviceLBSecurityGroupB038CAFC": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatically created Security Group for ELB localstackapigatewayserviceLB87CB328F",
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow from anyone on port 80",
+      "FromPort": 80,
+      "IpProtocol": "tcp",
+      "ToPort": 80
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "apigatewayserviceLBSecurityGrouptolocalstackapigatewayserviceServiceSecurityGroup2CD8C13B111114D561D1F": {
+   "Type": "AWS::EC2::SecurityGroupEgress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "DestinationSecurityGroupId": {
+     "Fn::GetAtt": [
+      "apigatewayserviceServiceSecurityGroup482DD4A3",
+      "GroupId"
+     ]
+    },
+    "FromPort": 11111,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "apigatewayserviceLBSecurityGroupB038CAFC",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 11111
+   }
+  },
+  "apigatewayserviceLBPublicListenerBEEB6648": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "DefaultActions": [
+     {
+      "TargetGroupArn": {
+       "Ref": "apigatewayserviceLBPublicListenerECSGroupA3E83D91"
+      },
+      "Type": "forward"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "apigatewayserviceLBAEB920C1"
+    },
+    "Port": 80,
+    "Protocol": "HTTP"
+   }
+  },
+  "apigatewayserviceLBPublicListenerECSGroupA3E83D91": {
+   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+   "Properties": {
+    "Port": 80,
+    "Protocol": "HTTP",
+    "TargetGroupAttributes": [
+     {
+      "Key": "stickiness.enabled",
+      "Value": "false"
+     }
+    ],
+    "TargetType": "ip",
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   }
+  },
+  "apigatewayserviceServiceBA83AC62": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "AnimeVerseClusterAC9F77AF"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "DesiredCount": 1,
+    "EnableECSManagedTags": false,
+    "HealthCheckGracePeriodSeconds": 60,
+    "LaunchType": "FARGATE",
+    "LoadBalancers": [
+     {
+      "ContainerName": "ApiGatewayContainer",
+      "ContainerPort": 11111,
+      "TargetGroupArn": {
+       "Ref": "apigatewayserviceLBPublicListenerECSGroupA3E83D91"
+      }
+     }
+    ],
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "apigatewayserviceServiceSecurityGroup482DD4A3",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet1SubnetEF1A347D"
+       },
+       {
+        "Ref": "AnimeVerseVPCPrivateSubnet2Subnet5023AB71"
+       }
+      ]
+     }
+    },
+    "ServiceName": "api-gateway",
+    "TaskDefinition": {
+     "Ref": "ApiGatewayTask3752F926"
+    }
+   },
+   "DependsOn": [
+    "apigatewayserviceLBPublicListenerECSGroupA3E83D91",
+    "apigatewayserviceLBPublicListenerBEEB6648",
+    "ApiGatewayTaskTaskRole067DCD80"
+   ]
+  },
+  "apigatewayserviceServiceSecurityGroup482DD4A3": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "localstack/api-gateway-service/Service/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "AnimeVerseVPC9F6762D3"
+    }
+   },
+   "DependsOn": [
+    "ApiGatewayTaskTaskRole067DCD80"
+   ]
+  },
+  "apigatewayserviceServiceSecurityGroupfromlocalstackapigatewayserviceLBSecurityGroupE592134711111B5508AC4": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "FromPort": 11111,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "apigatewayserviceServiceSecurityGroup482DD4A3",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "apigatewayserviceLBSecurityGroupB038CAFC",
+      "GroupId"
+     ]
+    },
+    "ToPort": 11111
+   },
+   "DependsOn": [
+    "ApiGatewayTaskTaskRole067DCD80"
+   ]
+  }
+ },
+ "Outputs": {
+  "apigatewayserviceLoadBalancerDNSDA4D203B": {
+   "Value": {
+    "Fn::GetAtt": [
+     "apigatewayserviceLBAEB920C1",
+     "DNSName"
+    ]
+   }
+  },
+  "apigatewayserviceServiceURL12F97A82": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "http://",
+      {
+       "Fn::GetAtt": [
+        "apigatewayserviceLBAEB920C1",
+        "DNSName"
+       ]
+      }
+     ]
+    ]
+   }
+  }
+ }
+}

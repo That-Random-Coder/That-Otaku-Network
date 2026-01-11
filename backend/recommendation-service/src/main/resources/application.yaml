@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: recommendation-service
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: create
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: recommendation
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.project.recommendation_service.domain.dto.KafkaDto
+        auto-offset-reset: earliest
+
+server:
+  port: 11116
+
+springdoc:
+  swagger-ui:
+    config-url: /api/recommendation/v3/api-docs/swagger-config
+    url: /api/recommendation/v3/api-docs
+    path: /v3/swagger-ui

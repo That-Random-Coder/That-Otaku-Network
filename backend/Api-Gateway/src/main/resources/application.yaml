@@ -1,0 +1,99 @@
+server:
+  port: 11111
+
+security:
+  jwt:
+    secret: #key
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          "[/**]":
+            allowedOrigins:
+              - http://localhost:5173
+              - "http://127.0.0.1:5500"
+              - "http://localhost:5500"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+      server:
+        webflux:
+          routes:
+            - id: authentication-service-route
+              uri: http://auth-service:11112
+              predicates:
+                - Path=/api/auth/**
+              filters:
+                - StripPrefix=2
+
+            - id: user-service-api-docs
+              uri: http://user-service:11113
+              predicates:
+                - Path=/api/profile/v3/**
+              filters:
+                - StripPrefix=2
+
+            - id: search-service-api-docs
+              uri: http://search-service:11114
+              predicates:
+                - Path=/api/search/v3/**
+              filters:
+                - StripPrefix=2
+
+            - id: content-service-api-docs
+              uri: http://content-service:11115
+              predicates:
+                - Path=/api/content/v3/**
+              filters:
+                - StripPrefix=2
+
+            - id: recommendation-service-api-docs
+              uri: http://recommendation-service:11116
+              predicates:
+                - Path=/api/recommendation/v3/**
+              filters:
+                - StripPrefix=2
+
+            - id: user-service
+              uri: http://user-service:11113
+              predicates:
+                - Path=/api/profile/**
+              filters:
+                - StripPrefix=2
+                - JwtValidation
+
+            - id: search-service
+              uri: http://search-service:11114
+              predicates:
+                - Path=/api/search/**
+              filters:
+                - StripPrefix=2
+                - JwtValidation
+
+            - id: content-service
+              uri: http://content-service:11115
+              predicates:
+                - Path=/api/content/**
+              filters:
+                - StripPrefix=2
+                - JwtValidation
+
+            - id: recommendation-service
+              uri: http://recommendation-service:11116
+              predicates:
+                - Path=/api/recommendation/**
+              filters:
+                - StripPrefix=2
+                - JwtValidation

@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: search-service
+
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: my-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.project.search_service.domain.dto.kafka.DataTransfer
+
+
+springdoc:
+  swagger-ui:
+    config-url: /api/profile/v3/api-docs/swagger-config
+    url: /api/profile/v3/api-docs
+    path: /v3/swagger-ui
+
+server:
+  port: 11114

@@ -1,0 +1,36 @@
+server:
+  port: 11113
+
+spring:
+  application:
+    name: notification-service
+
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: my-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.project.notification_service.dto.NotificationDto
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "xxx xxxx xxx "
+    password: "xxxx xxxxx xxxx xxxx"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+app:
+  mail:
+    from: rm4099859@gmail.com

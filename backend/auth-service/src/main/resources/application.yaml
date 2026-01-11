@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: auth-service
+
+  project:
+    name: Anime-Verse
+
+  datasource:
+    url: #url
+    username: #username
+    password: #password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  data:
+    redis:
+      port: 6379
+      host: auth-redis
+
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+
+security:
+  jwt:
+    secret: #key
+    expiration: 7200000 # 2 hours
+    refresh-expiration: 2592000000 # 30 days
+
+server:
+  port: 11112
+
+springdoc:
+  swagger-ui:
+    config-url: /api/auth/v3/api-docs/swagger-config
+    url: /api/auth/v3/api-docs
+    path: /v3/swagger-ui

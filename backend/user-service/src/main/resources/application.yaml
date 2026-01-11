@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    url: #Url
+    username: #USERNAME
+    password: #PASSWORD
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 6MB
+      max-request-size: 12MB
+
+  data:
+    redis:
+      port: 6379
+      host: ${SPRING_REDIS_HOST:user-redis}
+
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+  grpc:
+    server:
+      port: 22222
+      reflection:
+        enabled: true
+
+server:
+  port: 11113
+
+springdoc:
+  swagger-ui:
+    config-url: /api/profile/v3/api-docs/swagger-config
+    url: /api/profile/v3/api-docs
+    path: /v3/swagger-ui
