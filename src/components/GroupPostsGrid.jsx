@@ -9,7 +9,7 @@ const getCookie = (name) => {
   return match ? decodeURIComponent(match[1]) : ''
 }
 
-
+// Simple accent-aware spinner
 const Spinner = ({ size = 40, accent = {} }) => (
   <div style={{ width: size, height: size }} className="flex items-center justify-center">
     <svg viewBox="0 0 50 50" className="animate-spin" style={{ width: size, height: size }}>
@@ -38,7 +38,7 @@ export default function GroupPostsGrid({ groupId, accent = {} }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-
+    // reset when group changes
     setPosts([])
     setPage(0)
     setHasMore(true)
@@ -52,7 +52,7 @@ export default function GroupPostsGrid({ groupId, accent = {} }) {
       setError('')
       try {
         const url = `${import.meta.env.VITE_API_BASE_URL}content/content/recommendation/group-members?groupId=${encodeURIComponent(groupId || '')}&currentUserId=${encodeURIComponent(currentUserId || '')}&page=${p}&size=${BATCH_SIZE}`
-
+        // Use AccessToken cookie explicitly as Bearer token
         const tokenRaw = getCookie('AccessToken') || ''
         const auth = tokenRaw ? (tokenRaw.toLowerCase().startsWith('bearer ') ? tokenRaw : `Bearer ${tokenRaw}`) : ''
         const headers = auth ? { Authorization: auth, AccessToken: tokenRaw } : {}
@@ -104,7 +104,7 @@ export default function GroupPostsGrid({ groupId, accent = {} }) {
     return () => obs.disconnect()
   }, [sentinelRef.current, loading, hasMore, posts, page])
 
-
+  // RemoteMedia helper to fetch remote http(s) media, convert data: URIs and raw base64 payloads to Blobs and use object URLs to avoid embedding huge data URIs
   const RemoteMedia = ({ src, mediaType = '' }) => {
     const [objUrl, setObjUrl] = useState(null)
     const [loaded, setLoaded] = useState(false)

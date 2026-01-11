@@ -50,7 +50,7 @@ function GroupProfile() {
       },
     })
       .then(async (res) => {
-
+        // Debug: print the entire Response object, headers and raw body for inspection
         try {
           console.log('Group profile API response object:', res)
           console.log('Group profile response headers:', Array.from(res.headers.entries()))
@@ -70,7 +70,7 @@ function GroupProfile() {
       .then((data) => {
         console.log('Group profile API response:', data)
         const p = data?.data || data || {}
-
+        // Map fields conservatively, but keep raw data attached
         const mappedProfile = {
           id: p.id || p.groupId || groupId,
           name: p.name || p.groupName || '',
@@ -85,10 +85,10 @@ function GroupProfile() {
           raw: p,
         }
         setProfile(mappedProfile)
-
+        // Set membership flag if present from the profile data
         setIsMember(Boolean(p.isMember ?? p.isJoined ?? p.joined ?? false))
 
-
+        // Background check: fetch the current user's groups and search for this group's id.
         ;(async () => {
           try {
             const userId = getCookie('id') || getCookie('userId') || ''
@@ -102,7 +102,7 @@ function GroupProfile() {
             const res = await fetch(url, { headers })
             const body = await res.json().catch(() => ({}))
             if (!res.ok) {
-
+              // Non-fatal: log and return
               console.warn('Background fetch groups failed:', body)
               return
             }
@@ -131,7 +131,7 @@ function GroupProfile() {
       if (!userId) throw new Error('Missing user id. Please log in again.')
 
       if (!isMember) {
-
+        // Join
         console.log('Joining group', groupId, 'as', userId)
         const url = `${import.meta.env.VITE_API_BASE_URL}profile/group/join?groupId=${encodeURIComponent(groupId)}&userId=${encodeURIComponent(userId)}`
         const res = await fetch(url, {
@@ -147,21 +147,21 @@ function GroupProfile() {
           const parsed = (await import('../lib/parseApiError.js')).parseApiErrorBody(maybe)
           throw new Error(parsed.message || 'Failed to join group')
         }
-
+        // success
         setIsMember(true)
         setProfile((prev) => prev ? ({ ...prev, members: (prev.members || 0) + 1 }) : prev)
         setAlertBanner({ status: 'success', message: "You're a part of the troop!" })
         setTimeout(() => setAlertBanner({ status: '', message: '' }), 2500)
       } else {
-
-
+        // Leave
+        // Leader cannot leave — they must delete the group
         const currentUserId = String(getCookie('id') || getCookie('userId') || '')
         if (String(profile?.leaderId || '') === currentUserId) {
           throw new Error('Group leader cannot leave; delete the group instead.')
         }
 
         console.log('Leaving group', groupId, 'as', userId)
-
+        // Try a DELETE to the leave endpoint; fall back to POST to /group/leave if necessary
         const leaveUrls = [
           `${import.meta.env.VITE_API_BASE_URL}search/group/leave?groupId=${encodeURIComponent(groupId)}&userId=${encodeURIComponent(userId)}`,
           `${import.meta.env.VITE_API_BASE_URL}profile/group/leave?groupId=${encodeURIComponent(groupId)}&userId=${encodeURIComponent(userId)}`,
@@ -174,7 +174,7 @@ function GroupProfile() {
             const res = await fetch(u, { method, headers: { Authorization: accessToken.toLowerCase().startsWith('bearer ') ? accessToken : `Bearer ${accessToken}` } })
             console.log('Tried leave url', u, 'status', res.status)
             if (res.ok) { left = true; break }
-
+            // if 405 Method Not Allowed, try POST
             if (res.status === 405) {
               const res2 = await fetch(u, { method: 'POST', headers: { Authorization: accessToken.toLowerCase().startsWith('bearer ') ? accessToken : `Bearer ${accessToken}` } })
               console.log('Tried fallback POST for', u, 'status', res2.status)
@@ -182,7 +182,7 @@ function GroupProfile() {
             }
           } catch (e) {
             console.error('Error trying leave url', u, e)
-
+            // try next
           }
         }
 
@@ -222,10 +222,10 @@ function GroupProfile() {
         const parsed = (await import('../lib/parseApiError.js')).parseApiErrorBody(maybe)
         throw new Error(parsed.message || 'Failed to delete group')
       }
-
+      // success
       setAlertBanner({ status: 'error', message: 'The Group has been deleted' })
       setTimeout(() => setAlertBanner({ status: '', message: '' }), 2500)
-
+      // navigate back to friends
       setTimeout(() => { window.location.href = '/friends' }, 900)
     } catch (err) {
       console.error('Delete error:', err)
@@ -265,7 +265,7 @@ function GroupProfile() {
                 <p className="mt-2 text-sm text-slate-200/85 max-w-2xl">Group details and members.</p>
               </div>
 
-
+              {/* Leader-only update group info button (matches Profile settings placement) */}
               <div>
                 {String(getCookie('id') || getCookie('userId') || '') === String(profile?.leaderId || groupIdParam) && (
                   <button onClick={() => setShowEditGroupModal(true)} className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-white/20">Update Group Information</button>
@@ -293,7 +293,7 @@ function GroupProfile() {
 
 
 
-
+                  {/* Background banner */}
                   <div className="relative w-full">
                     <div className="h-36 sm:h-48 w-full overflow-hidden rounded-2xl bg-black/20" style={{ backgroundImage: profile.backgroundImage ? `url(${profile.backgroundImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                     <div className="-mt-16 flex flex-col items-center w-full">
@@ -309,7 +309,7 @@ function GroupProfile() {
                         <span className="text-2xl font-bold text-white">{profile.name}</span>
                       </div>
 
-
+                      {/* Mobile-only Share button placed under name */}
                       <div className="mt-2 flex justify-center md:hidden">
                         <button
                           type="button"
@@ -349,10 +349,10 @@ function GroupProfile() {
                   </div>
                 </div>
 
-
+{/* Desktop — replicate Profile.jsx desktop layout */}
                 <div className="hidden md:block">
                   <div className="w-full max-w-4xl rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
-
+                    {/* Desktop background banner */}
                     <div className="h-36 w-full rounded-xl overflow-hidden mb-4 bg-black/20" style={{ backgroundImage: profile.backgroundImage ? `url(${profile.backgroundImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                     <div className="flex flex-col sm:flex-row sm:items-start gap-6">
                       <div className="flex-shrink-0">
@@ -370,7 +370,7 @@ function GroupProfile() {
                           <div className="min-w-0">
                             <div className="flex items-center gap-3">
                               <h2 className="text-2xl font-bold text-white leading-tight">{profile.name}</h2>
-
+                              {/* <div className="text-xs text-slate-300/80 rounded-full bg-white/5 px-2 py-1">{profile.activity}</div> */}
                             </div>
 
                             <div className="mt-1 text-sm text-slate-300/80">Leader: {profile.leaderName || '—'}</div>
@@ -406,7 +406,7 @@ function GroupProfile() {
                   </div>
                 </div>
 
-
+                {/* Posts grid for group members (same behavior as Profile's UserPostsGrid) */}
                 <div className="mt-8 w-full">
                   <GroupPostsGrid groupId={profile?.id || groupIdParam} accent={accent} />
                 </div>

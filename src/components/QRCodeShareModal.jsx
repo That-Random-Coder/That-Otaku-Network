@@ -26,9 +26,9 @@ const QRCodeShareModal = ({ isOpen, onClose, accent, motionSafe, targetId, targe
 
     const color = accent?.mid || '#7c3aed'
 
-
-
-
+    // create a small SVG to embed text in the center of the QR
+    // Create a white SVG center with slate-colored text (larger) for contrast inside the QR
+    // Increase text size but keep overall QR size unchanged; use accent color for center text
     const svgTextColor = accent?.mid || color
     const svg = `
       <svg xmlns='http://www.w3.org/2000/svg' width='420' height='140' viewBox='0 0 420 140'>
@@ -38,14 +38,14 @@ const QRCodeShareModal = ({ isOpen, onClose, accent, motionSafe, targetId, targe
 
     const svgDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
 
-
+    // Build gradient stops from the accent colors
     const gradientStops = [
       { offset: 0, color: accent?.start || color },
       { offset: 0.5, color: accent?.mid || color },
       { offset: 1, color: accent?.end || color },
     ]
 
-
+    // create QR instance with white background and accent gradient for dots and accent-colored corners
     qrInstanceRef.current = new QRCodeStyling({
       width: 380,
       height: 380,
@@ -77,18 +77,18 @@ const QRCodeShareModal = ({ isOpen, onClose, accent, motionSafe, targetId, targe
       },
     })
 
-
+    // append to the container
     if (qrRef.current) {
       qrRef.current.innerHTML = ''
       qrInstanceRef.current.append(qrRef.current)
     }
 
     return () => {
-
+      // cleanup
       if (qrRef.current) qrRef.current.innerHTML = ''
       qrInstanceRef.current = null
     }
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, accent])
 
   const handleDownload = async () => {
@@ -129,7 +129,7 @@ const QRCodeShareModal = ({ isOpen, onClose, accent, motionSafe, targetId, targe
           <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-indigo-500/25 blur-3xl" />
 
-
+          {/* Header */}
           <div className="relative p-6 border-b border-white/10">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -147,7 +147,7 @@ const QRCodeShareModal = ({ isOpen, onClose, accent, motionSafe, targetId, targe
             )}
           </div>
 
-
+          {/* QR Area */}
           <div className="relative flex-1 p-6 flex flex-col items-center gap-6">
             <div className="relative rounded-3xl p-1" style={{ background: `linear-gradient(135deg, ${accent.start}, ${accent.end})` }}>
               <div className="rounded-2xl bg-white p-6 flex items-center justify-center" style={{ boxShadow: `0 30px 80px rgba(0,0,0,0.45), 0 0 30px ${accent.glow}` }}>

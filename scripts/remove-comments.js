@@ -44,26 +44,26 @@ function processFile(file) {
     const text = fs.readFileSync(file, 'utf8')
     let out = text
 
-
+    // Backup original
     backupFile(file)
 
-
+    // Remove JSX comments {/* ... */}
     out = out.replace(/\{\/\*[\s\S]*?\*\/\}/g, '')
 
-
+    // Remove JS/CSS block comments /* ... */
     out = out.replace(/\/\*[\s\S]*?\*\//g, '')
 
+    // Remove HTML comments <!-- ... -->
+    out = out.replace(/<!--([\s\S]*?)-->/g, '')
 
-    out = out.replace(
-
-
-
+    // Remove line comments (//...) but avoid URLs (http:// or https://)
+    // We use a simple heuristic: only remove // when not preceded by colon
     out = out.replace(/(^|[^:\\])\/\/.*$/gm, '$1')
 
-
+    // Remove trailing whitespace on each line
     out = out.replace(/[ \t]+$/gm, '')
 
-
+    // Remove consecutive blank lines (more than 2) -> keep at most 1
     out = out.replace(/\n{3,}/g, '\n\n')
 
     if (out !== text) fs.writeFileSync(file, out, 'utf8')

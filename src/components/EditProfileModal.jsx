@@ -161,7 +161,7 @@ const LocationPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe }) 
       </motion.div>
     </AnimatePresence>
   )
-}
+} 
 
 const EditProfileModal = ({ isOpen, onClose, onSave, initial = {}, accent, motionSafe }) => {
   const [displayName, setDisplayName] = useState(initial.displayName || '')
@@ -169,7 +169,7 @@ const EditProfileModal = ({ isOpen, onClose, onSave, initial = {}, accent, motio
   const [location, setLocation] = useState(initial.location || '')
   const [dateOfBirth, setDateOfBirth] = useState(initial.dateOfBirth || '')
   const todayIso = new Date().toISOString().split('T')[0]
-
+  // Discord-style DOB parts
   const [dobY, setDobY] = useState(initial.dateOfBirth ? String(initial.dateOfBirth).split('-')[0] : '')
   const [dobM, setDobM] = useState(initial.dateOfBirth ? String(initial.dateOfBirth).split('-')[1] : '')
   const [dobD, setDobD] = useState(initial.dateOfBirth ? String(initial.dateOfBirth).split('-')[2] : '')
@@ -188,7 +188,7 @@ const EditProfileModal = ({ isOpen, onClose, onSave, initial = {}, accent, motio
     setDobD(initial.dateOfBirth ? String(initial.dateOfBirth).split('-')[2] : '')
   }, [isOpen, initial])
 
-
+  // helper to set date parts and keep ISO in sync
   const setDobParts = (y, m, d) => {
     setDobY(y || '')
     setDobM(m || '')
@@ -261,7 +261,7 @@ const EditProfileModal = ({ isOpen, onClose, onSave, initial = {}, accent, motio
               <div>
                 <label className="text-sm font-medium text-slate-200 mb-2 block">Date of Birth</label>
                 <div className="mt-2 grid grid-cols-3 gap-3" role="group" aria-label="Date of birth selector">
-
+                  {/* Day */}
                   <div>
                     <label className="sr-only">Day</label>
                     <select
@@ -286,7 +286,7 @@ const EditProfileModal = ({ isOpen, onClose, onSave, initial = {}, accent, motio
                     </select>
                   </div>
 
-
+                  {/* Month */}
                   <div>
                     <label className="sr-only">Month</label>
                     <select
@@ -305,7 +305,7 @@ const EditProfileModal = ({ isOpen, onClose, onSave, initial = {}, accent, motio
                     </select>
                   </div>
 
-
+                  {/* Year */}
                   <div>
                     <label className="sr-only">Year</label>
                     <select
@@ -331,7 +331,7 @@ const EditProfileModal = ({ isOpen, onClose, onSave, initial = {}, accent, motio
 
           <div className="relative flex-1 p-6">
             <LocationPickerModal isOpen={showLocationPicker} onClose={() => setShowLocationPicker(false)} onSelect={(v) => { setLocation(v); setShowLocationPicker(false) }} accent={accent} motionSafe={motionSafe} />
-          </div>
+          </div> 
 
           <div className="relative p-6 border-t border-white/10 flex items-center justify-between gap-4">
             <button onClick={onClose} className="rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">Cancel</button>

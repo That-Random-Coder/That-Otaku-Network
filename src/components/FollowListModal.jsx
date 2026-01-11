@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
-import AlertBanner from '../components/AlertBanner.jsx'
+import AlertBanner from '../components/AlertBanner.jsx' 
 
 const getCookie = (name) => {
   if (typeof document === 'undefined') return ''
@@ -36,7 +36,7 @@ const FollowListModal = ({ isOpen, onClose, type = 'followers', accent, motionSa
   const sentinelRef = useRef(null)
   const [infiniteEnabled, setInfiniteEnabled] = useState(false)
 
-
+  // IntersectionObserver to implement infinite scroll for modal (only active when infiniteEnabled)
   useEffect(() => {
     if (!isOpen) return
     if (!infiniteEnabled) return
@@ -44,7 +44,7 @@ const FollowListModal = ({ isOpen, onClose, type = 'followers', accent, motionSa
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return
         if (loading) return
-
+        // If totalPages is unknown (0) allow fetching more; otherwise stop at last page
         if (totalPages === 0 || page < totalPages - 1) {
           fetchPage(page + 1)
         }
@@ -54,7 +54,7 @@ const FollowListModal = ({ isOpen, onClose, type = 'followers', accent, motionSa
     const el = sentinelRef.current
     if (el) observer.observe(el)
     return () => observer.disconnect()
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, page, totalPages, loading, infiniteEnabled])
 
   useEffect(() => {
@@ -63,12 +63,12 @@ const FollowListModal = ({ isOpen, onClose, type = 'followers', accent, motionSa
     setPage(0)
     setTotalPages(0)
     setError('')
-
+    // fetch first page
     fetchPage(0)
     return () => {
       if (abortRef.current) abortRef.current.abort()
     }
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, type])
 
   const saveMetaToLocal = (uid, meta) => {
@@ -76,7 +76,7 @@ const FollowListModal = ({ isOpen, onClose, type = 'followers', accent, motionSa
       const key = LOCAL_KEYS[type](uid)
       localStorage.setItem(key, JSON.stringify(meta))
     } catch (e) {
-
+      // ignore
     }
   }
 
@@ -115,7 +115,7 @@ const FollowListModal = ({ isOpen, onClose, type = 'followers', accent, motionSa
         avatar: it.avatar || it.profileImg || it.imageUrl || '',
       }))
 
-
+      // capture meta fields
       const meta = {
         numberOfElements: data?.numberOfElements ?? data?.content?.length ?? mapped.length,
         pageSize: data?.pageSize ?? data?.size ?? mapped.length,
@@ -126,7 +126,7 @@ const FollowListModal = ({ isOpen, onClose, type = 'followers', accent, motionSa
       saveMetaToLocal(cookieUserId, meta)
       setPage(p)
 
-
+      // Update items and determine whether to enable infinite scroll
       setItems((prev) => {
         const newArr = p === 0 ? mapped : [...prev, ...mapped]
         const knownTotal = data?.numberOfElements ?? data?.totalElements ?? ((meta.pageSize && meta.totalPages) ? (meta.pageSize * meta.totalPages) : undefined)
@@ -171,7 +171,7 @@ const FollowListModal = ({ isOpen, onClose, type = 'followers', accent, motionSa
           <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-indigo-500/25 blur-3xl" />
 
-
+          {/* Header */}
           <div className="relative p-6 border-b border-white/10">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -194,7 +194,7 @@ const FollowListModal = ({ isOpen, onClose, type = 'followers', accent, motionSa
             </div>
           </div>
 
-
+          {/* List Grid */}
           <div className="relative flex-1 overflow-y-auto p-6">
             {loading && <div className="text-center text-slate-300 py-8">Loading...</div>}
             {error && (
@@ -226,13 +226,13 @@ const FollowListModal = ({ isOpen, onClose, type = 'followers', accent, motionSa
 
             {!loading && !error && items.length === 0 && <div className="text-center text-slate-400 py-8">No {title.toLowerCase()} found.</div>}
 
-
+            {/* Infinite scroll sentinel */}
             <div ref={sentinelRef} className="h-6" />
             {loading && page > 0 && <div className="text-center text-slate-300 py-4">Loading more…</div>}
 
           </div>
 
-
+          {/* Footer */}
           <div className="relative p-6 border-t border-white/10 flex items-center justify-between gap-4">
             <p className="text-sm text-slate-300/80" style={{letterSpacing: '.2rem'}}>THATOTAKUNETWORK</p>
             <div className="flex gap-3">

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Groups - Temp (Standalone)</title>
     <style>
-
+      /* Minimal styles to match the original look & feel */
       :root {
         --bg1: #0f1724;
         --card: rgba(116, 16, 16, 0.05);
@@ -86,7 +86,7 @@
         font-size: 13px;
       }
 
-
+      /* Modal */
       .modal-backdrop {
         position: fixed;
         inset: 0;
@@ -175,7 +175,7 @@
       small.hint {
         color: rgba(255, 255, 255, 0.6);
       }
-
+      /* API Tester Section */
       .api-tester {
         margin-top: 30px;
         padding: 20px;
@@ -262,7 +262,7 @@
 
       <div class="grid" id="groups-list"></div>
 
-
+      <!-- Group API Tester Section -->
       <div class="api-tester">
         <h3>🧪 Group API Tester</h3>
         <div class="api-grid">
@@ -292,7 +292,7 @@
       </div>
     </div>
 
-
+    <!-- Get Group Modal -->
     <div id="get-group-modal" class="modal-backdrop hidden">
       <div class="modal">
         <div
@@ -333,7 +333,7 @@
       </div>
     </div>
 
-
+    <!-- Join Group Modal -->
     <div id="join-group-modal" class="modal-backdrop hidden">
       <div class="modal">
         <div
@@ -372,7 +372,7 @@
       </div>
     </div>
 
-
+    <!-- Leave Group Modal -->
     <div id="leave-group-modal" class="modal-backdrop hidden">
       <div class="modal">
         <div
@@ -411,7 +411,7 @@
       </div>
     </div>
 
-
+    <!-- Update Bio Modal -->
     <div id="update-bio-modal" class="modal-backdrop hidden">
       <div class="modal">
         <div
@@ -458,7 +458,7 @@
       </div>
     </div>
 
-
+    <!-- Update Images Modal -->
     <div id="update-images-modal" class="modal-backdrop hidden">
       <div class="modal">
         <div
@@ -505,7 +505,7 @@
       </div>
     </div>
 
-
+    <!-- Change Leader Modal -->
     <div id="change-leader-modal" class="modal-backdrop hidden">
       <div class="modal">
         <div
@@ -560,7 +560,7 @@
       </div>
     </div>
 
-
+    <!-- Delete Group Modal -->
     <div id="delete-group-modal" class="modal-backdrop hidden">
       <div class="modal">
         <div
@@ -603,7 +603,7 @@
       </div>
     </div>
 
-
+    <!-- Modal -->
     <div id="modal" class="modal-backdrop hidden" aria-hidden="true">
       <div
         class="modal"
@@ -673,7 +673,7 @@
       </div>
     </div>
 
-
+    <!-- User Modal -->
     <div id="user-modal" class="modal-backdrop hidden" aria-hidden="true">
       <div
         class="modal"
@@ -775,12 +775,12 @@
     </div>
 
     <script>
-
+      // Configuration: using the user-provided id and bearer token
       const LEADER_ID = "79e4aef7-914f-468f-8d86-4c9869773b9c";
       const BEARER_TOKEN =
         "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInR5cGUiOiJBQ0NFU1MiLCJzdWIiOiI3OWU0YWVmNy05MTRmLTQ2OGYtOGQ4Ni00Yzk4Njk3NzNiOWMiLCJpYXQiOjE3NjY0OTg2OTUsImV4cCI6MTc2OTA5MDY5NX0.FzFgNYHw8rXNFqsAxlPIpvCmEXzewlloo-nG5ueJGVg";
 
-
+      // Seed groups to display initially
       const seedGroups = [
         { id: "g1", name: "Shonen Shapers", members: 1240, activity: "Daily" },
         {
@@ -804,11 +804,11 @@
         },
       ];
 
-      const maxFileSize = 5 * 1024 * 1024;
+      const maxFileSize = 5 * 1024 * 1024; // 5 MB
 
       const el = (id) => document.getElementById(id);
 
-
+      // Render group list
       const renderGroups = (groups) => {
         const container = el("groups-list");
         container.innerHTML = "";
@@ -840,7 +840,7 @@
           .replace(/>/g, "&gt;");
       }
 
-
+      // Modal controls
       const modal = el("modal");
       const openBtn = el("open-create");
       const closeBtn = el("close-create");
@@ -865,7 +865,7 @@
       closeBtn.addEventListener("click", hideModal);
       cancelBtn.addEventListener("click", hideModal);
 
-
+      // file handling
       groupIcon.addEventListener("change", (e) => {
         fileError.classList.add("hidden");
         const f = e.target.files && e.target.files[0];
@@ -942,7 +942,7 @@
         apiMsg.classList.add(type === "success" ? "success" : "error");
         apiMsg.classList.remove("hidden");
         apiMsg.textContent = message;
-
+        // auto hide after 5s
         setTimeout(() => apiMsg.classList.add("hidden"), 5000);
       }
 
@@ -979,7 +979,7 @@
           });
           const body = await res.json().catch(() => ({}));
           if (!res.ok) {
-
+            // If server returns an error structure, try to show it
             const msg =
               (body && (body.message || (body.error && body.error.message))) ||
               "Failed to create group (status " + res.status + ")";
@@ -987,7 +987,7 @@
           }
           const created = (body && (body.data || body)) || {};
           showApiMessage("success", "Group created");
-
+          // add to UI list
           seedGroups.unshift({
             id: created.id || "g" + Date.now(),
             name,
@@ -995,7 +995,7 @@
             activity: "Now",
           });
           renderGroups(seedGroups);
-
+          // close modal shortly
           setTimeout(hideModal, 800);
         } catch (err) {
           console.error(err);
@@ -1006,15 +1006,15 @@
         }
       });
 
-
+      // initial render
       renderGroups(seedGroups);
 
-
+      // Close modal when clicking backdrop
       modal.addEventListener("click", (e) => {
         if (e.target === modal) hideModal();
       });
 
-
+      // ==================== CREATE USER FUNCTIONALITY ====================
       const userModal = el("user-modal");
       const openUserBtn = el("open-user");
       const closeUserBtn = el("close-user");
@@ -1041,12 +1041,12 @@
       closeUserBtn.addEventListener("click", hideUserModal);
       cancelUserBtn.addEventListener("click", hideUserModal);
 
-
+      // Generate UUID
       generateUuidBtn.addEventListener("click", () => {
         userId.value = crypto.randomUUID();
       });
 
-
+      // User image handling
       userImage.addEventListener("change", (e) => {
         userFileError.classList.add("hidden");
         const f = e.target.files && e.target.files[0];
@@ -1119,7 +1119,7 @@
         const location = userLocation.value.trim();
         const dateOfBirth = userDob.value;
 
-
+        // Validate required fields
         if (
           !id ||
           !username ||
@@ -1135,7 +1135,7 @@
           return;
         }
 
-
+        // Validate UUID format
         const uuidRegex =
           /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         if (!uuidRegex.test(id)) {
@@ -1143,7 +1143,7 @@
           return;
         }
 
-
+        // Validate username format
         const usernameRegex = /^[a-zA-Z0-9_]+$/;
         if (!usernameRegex.test(username)) {
           showUserApiMessage(
@@ -1197,7 +1197,7 @@
           );
           console.log("Created user:", created);
 
-
+          // Close modal shortly
           setTimeout(hideUserModal, 1500);
         } catch (err) {
           console.error(err);
@@ -1208,16 +1208,16 @@
         }
       });
 
-
+      // Close user modal when clicking backdrop
       userModal.addEventListener("click", (e) => {
         if (e.target === userModal) hideUserModal();
       });
 
-
+      // ==================== GROUP API TESTER FUNCTIONALITY ====================
       const apiResult = el("api-result");
       const BASE_URL = "http://localhost:11111/api/profile";
 
-
+      // Helper functions
       function showResult(data, isError = false) {
         apiResult.classList.remove("hidden");
         apiResult.style.color = isError ? "#fca5a5" : "#86efac";
@@ -1233,7 +1233,7 @@
         setTimeout(() => msgEl.classList.add("hidden"), 5000);
       }
 
-
+      // Generic modal handlers
       document.querySelectorAll(".modal-close-btn").forEach((btn) => {
         btn.addEventListener("click", (e) => {
           e.target.closest(".modal-backdrop").classList.add("hidden");
@@ -1246,7 +1246,7 @@
         });
       });
 
-
+      // GET Group
       el("api-get-group").addEventListener("click", () => {
         el("get-group-modal").classList.remove("hidden");
         el("get-group-id").value = "";
@@ -1280,7 +1280,7 @@
         }
       });
 
-
+      // JOIN Group
       el("api-join-group").addEventListener("click", () => {
         el("join-group-modal").classList.remove("hidden");
         el("join-group-id").value = "";
@@ -1320,7 +1320,7 @@
         }
       });
 
-
+      // LEAVE Group
       el("api-leave-group").addEventListener("click", () => {
         el("leave-group-modal").classList.remove("hidden");
         el("leave-group-id").value = "";
@@ -1363,7 +1363,7 @@
         }
       });
 
-
+      // UPDATE Bio
       el("api-update-bio").addEventListener("click", () => {
         el("update-bio-modal").classList.remove("hidden");
         el("update-bio-group-id").value = "";
@@ -1402,7 +1402,7 @@
         }
       });
 
-
+      // UPDATE Images
       el("api-update-images").addEventListener("click", () => {
         el("update-images-modal").classList.remove("hidden");
         el("update-images-group-id").value = "";
@@ -1453,7 +1453,7 @@
         }
       });
 
-
+      // CHANGE Leader
       el("api-change-leader").addEventListener("click", () => {
         el("change-leader-modal").classList.remove("hidden");
         el("change-leader-group-id").value = "";
@@ -1493,7 +1493,7 @@
         }
       });
 
-
+      // DELETE Group
       el("api-delete-group").addEventListener("click", () => {
         el("delete-group-modal").classList.remove("hidden");
         el("delete-group-id").value = "";

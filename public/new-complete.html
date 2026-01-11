@@ -476,6 +476,7 @@
         <p>AnimeVerse Content Service API Testing Interface</p>
       </header>
 
+      <!-- Configuration Section -->
       <div class="config-section">
         <h3>⚙️ API Configuration (via API Gateway)</h3>
         <div class="config-row" style="margin-bottom: 15px">
@@ -517,6 +518,7 @@
         </p>
       </div>
 
+      <!-- Navigation Tabs -->
       <div class="tabs">
         <button class="tab-btn active" onclick="showTab('create')">
           📝 Create Content
@@ -535,6 +537,7 @@
         <button class="tab-btn" onclick="showTab('manage')">🔧 Manage</button>
       </div>
 
+      <!-- Create Content Tab -->
       <div id="create" class="tab-content active">
         <div class="card">
           <h3><span class="method post">POST</span> Create Content</h3>
@@ -697,6 +700,7 @@
         </div>
       </div>
 
+      <!-- Get Content Tab -->
       <div id="get" class="tab-content">
         <div class="card">
           <h3><span class="method get">GET</span> Get Content by ID</h3>
@@ -742,6 +746,7 @@
         </div>
       </div>
 
+      <!-- User Contents Tab -->
       <div id="user" class="tab-content">
         <div class="card">
           <h3><span class="method get">GET</span> Get Contents by User ID</h3>
@@ -793,6 +798,7 @@
         </div>
       </div>
 
+      <!-- Batch Get Tab -->
       <div id="batch" class="tab-content">
         <div class="card">
           <h3>
@@ -842,8 +848,9 @@
         </div>
       </div>
 
+      <!-- Interactions Tab -->
       <div id="interactions" class="tab-content">
-
+        <!-- Like Content -->
         <div class="card">
           <h3><span class="method post">POST</span> Like Content</h3>
           <p class="endpoint">/content/like</p>
@@ -880,6 +887,7 @@
           </div>
         </div>
 
+        <!-- Dislike Content -->
         <div class="card">
           <h3><span class="method post">POST</span> Dislike Content</h3>
           <p class="endpoint">/content/dislike</p>
@@ -916,6 +924,7 @@
           </div>
         </div>
 
+        <!-- Remove Like/Dislike -->
         <div class="card">
           <h3><span class="method delete">DELETE</span> Remove Like/Dislike</h3>
           <p class="endpoint">/content/like-dislike/remove</p>
@@ -952,6 +961,7 @@
           </div>
         </div>
 
+        <!-- Share Content -->
         <div class="card">
           <h3><span class="method post">POST</span> Share Content</h3>
           <p class="endpoint">/content/share</p>
@@ -989,8 +999,9 @@
         </div>
       </div>
 
+      <!-- Comments Tab -->
       <div id="comments" class="tab-content">
-
+        <!-- Add Comment -->
         <div class="card">
           <h3><span class="method post">POST</span> Add Comment</h3>
           <p class="endpoint">/content/comment/add</p>
@@ -1044,6 +1055,7 @@
           </div>
         </div>
 
+        <!-- Get Comments -->
         <div class="card">
           <h3>
             <span class="method get">GET</span> Get Comments by Content ID
@@ -1080,8 +1092,9 @@
         </div>
       </div>
 
+      <!-- Manage Tab -->
       <div id="manage" class="tab-content">
-
+        <!-- Enable Content -->
         <div class="card">
           <h3><span class="method put">PUT</span> Enable Content</h3>
           <p class="endpoint">/content/enable</p>
@@ -1107,6 +1120,7 @@
           </div>
         </div>
 
+        <!-- Disable Content -->
         <div class="card">
           <h3><span class="method put">PUT</span> Disable Content</h3>
           <p class="endpoint">/content/disable</p>
@@ -1132,6 +1146,7 @@
           </div>
         </div>
 
+        <!-- Delete Content -->
         <div class="card">
           <h3><span class="method delete">DELETE</span> Delete Content</h3>
           <p class="endpoint">/content/delete</p>
@@ -1160,7 +1175,7 @@
     </div>
 
     <script>
-
+      // Get base URL (API Gateway)
       function getBaseUrl() {
         return (
           document.getElementById("baseUrl").value.trim().replace(/\/$/, "") +
@@ -1168,10 +1183,12 @@
         );
       }
 
+      // Get JWT Token
       function getAuthToken() {
         return document.getElementById("jwtToken").value.trim();
       }
 
+      // Get default headers with Authorization
       function getHeaders(includeContentType = true) {
         const headers = {
           Authorization: `Bearer ${getAuthToken()}`,
@@ -1182,6 +1199,7 @@
         return headers;
       }
 
+      // Fill all user ID fields with default
       function fillAllUserIds() {
         const defaultUserId = document.getElementById("defaultUserId").value;
         const userIdFields = [
@@ -1206,6 +1224,7 @@
         alert("✅ User ID filled in all forms!");
       }
 
+      // Tab navigation
       function showTab(tabName) {
         document
           .querySelectorAll(".tab-content")
@@ -1218,6 +1237,7 @@
         event.target.classList.add("active");
       }
 
+      // Display response
       function displayResponse(elementId, response, isSuccess) {
         const element = document.getElementById(elementId);
         element.className = `response-content ${
@@ -1232,6 +1252,7 @@
         )}`;
       }
 
+      // Test connection
       async function testConnection() {
         try {
           const baseGateway = document
@@ -1253,6 +1274,7 @@
         }
       }
 
+      // File preview
       function previewFile(input) {
         const file = input.files[0];
         if (file) {
@@ -1276,6 +1298,7 @@
         }
       }
 
+      // Create Content
       async function createContent(event) {
         event.preventDefault();
 
@@ -1325,6 +1348,7 @@
         }
       }
 
+      // Get Content by ID
       async function getContentById() {
         const contentId = document.getElementById("get_contentId").value;
         const currentUserId =
@@ -1350,6 +1374,7 @@
         }
       }
 
+      // Get Contents by User ID
       async function getContentsByUserId() {
         const userId = document.getElementById("user_userId").value;
         const currentUserId =
@@ -1376,6 +1401,7 @@
         }
       }
 
+      // Get Contents by IDs (Batch)
       async function getContentsByIds() {
         const contentIds = document
           .getElementById("batch_contentIds")
@@ -1409,6 +1435,7 @@
         }
       }
 
+      // Like Content
       async function likeContent() {
         const body = {
           contentId: document.getElementById("like_contentId").value,
@@ -1430,6 +1457,7 @@
         }
       }
 
+      // Dislike Content
       async function dislikeContent() {
         const body = {
           contentId: document.getElementById("dislike_contentId").value,
@@ -1451,6 +1479,7 @@
         }
       }
 
+      // Remove Like/Dislike
       async function removeLikeDislike() {
         const body = {
           contentId: document.getElementById("removeLike_contentId").value,
@@ -1476,6 +1505,7 @@
         }
       }
 
+      // Share Content
       async function shareContent() {
         const contentId = document.getElementById("share_contentId").value;
         const userId = document.getElementById("share_userId").value;
@@ -1497,6 +1527,7 @@
         }
       }
 
+      // Add Comment
       async function addComment() {
         const body = {
           contentId: document.getElementById("comment_contentId").value,
@@ -1526,6 +1557,7 @@
         }
       }
 
+      // Get Comments
       async function getComments() {
         const contentId = document.getElementById(
           "getComments_contentId"
@@ -1554,6 +1586,7 @@
         }
       }
 
+      // Enable Content
       async function enableContent() {
         const contentId = document.getElementById("enable_contentId").value;
 
@@ -1576,6 +1609,7 @@
         }
       }
 
+      // Disable Content
       async function disableContent() {
         const contentId = document.getElementById("disable_contentId").value;
 
@@ -1598,6 +1632,7 @@
         }
       }
 
+      // Delete Content
       async function deleteContent() {
         const contentId = document.getElementById("delete_contentId").value;
 
@@ -1622,6 +1657,7 @@
         }
       }
 
+      // Display single content card
       function displayContentCard(containerId, content) {
         const container = document.getElementById(containerId);
 
@@ -1655,6 +1691,7 @@
             `;
       }
 
+      // Display content grid
       function displayContentGrid(containerId, contents) {
         const container = document.getElementById(containerId);
 
@@ -1695,6 +1732,7 @@
           .join("");
       }
 
+      // Display comments list
       function displayCommentsList(comments) {
         const container = document.getElementById("commentsList");
 
@@ -1717,6 +1755,7 @@
           .join("");
       }
 
+      // Format date
       function formatDate(dateString) {
         if (!dateString) return "Unknown date";
         const date = new Date(dateString);
@@ -1729,6 +1768,7 @@
         });
       }
 
+      // Generate random UUID for testing
       function generateUUID() {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
           /[xy]/g,
@@ -1740,8 +1780,9 @@
         );
       }
 
+      // Add UUID generation buttons on load
       document.addEventListener("DOMContentLoaded", () => {
-
+        // Pre-fill with test UUIDs for convenience
         const testUserId = generateUUID();
         document.querySelectorAll('input[id*="_userId"]').forEach((input) => {
           if (!input.value) input.placeholder += ` (e.g., ${testUserId})`;

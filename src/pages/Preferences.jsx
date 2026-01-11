@@ -12,7 +12,7 @@ const getCookie = (name) => {
   return match ? decodeURIComponent(match[1]) : ''
 }
 
-
+// Helper to convert constants like SLICE_OF_LIFE -> Slice of Life
 const humanize = (s) => String(s || '').toLowerCase().split('_').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ')
 
 const GENRES = [
@@ -59,7 +59,7 @@ export default function Preferences() {
         throw new Error(parsed.message || 'Failed to fetch recommendations')
       }
 
-
+      // store feed for Home
       try { localStorage.setItem('recommendationFeed', JSON.stringify(Array.isArray(data) ? data : (data?.data || []))) } catch (e) {}
 
       try { localStorage.setItem('profileCompleted', 'true'); document.cookie = 'profileCompleted=true; path=/; max-age=604800; SameSite=Lax' } catch (e) {}
@@ -79,7 +79,7 @@ export default function Preferences() {
       const token = getCookie('AccessToken') || (typeof localStorage !== 'undefined' ? localStorage.getItem('AccessToken') || '' : '')
       const auth = token ? (token.toLowerCase().startsWith('bearer ') ? token : `Bearer ${token}`) : ''
 
-
+      // Build JSON payload and send it as the request body even though method is GET (backend expects this)
       const payload = { category: selectedCategories.map(humanize), genre: selectedGenres.map(humanize) }
       const url = import.meta.env.VITE_API_BASE_URL + 'recommendation/feed/first/get'
       try { console.log('[Preferences] sending preferences to:', url, 'payload:', payload, 'authPresent:', !!auth) } catch (e) {}
@@ -90,10 +90,10 @@ export default function Preferences() {
         throw new Error(parsed.message || 'Failed to save preferences')
       }
 
-
+      // store recommendation feed so Home can render it immediately
       try { localStorage.setItem('recommendationFeed', JSON.stringify(Array.isArray(data) ? data : (data?.data || []))) } catch (e) {}
 
-
+      // mark profile complete and navigate home
       try { localStorage.setItem('profileCompleted', 'true'); document.cookie = 'profileCompleted=true; path=/; max-age=604800; SameSite=Lax' } catch (e) {}
       navigate('/', { replace: true })
     } catch (err) {

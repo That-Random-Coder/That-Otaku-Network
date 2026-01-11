@@ -30,7 +30,7 @@ const buildMediaSrc = (media, mediaType) => {
   return media
 }
 
-
+// Helper to extract canonical counts from a server response (defensive)
 const parseCountsFromResponse = (data) => {
   if (!data) return {}
   const item = Array.isArray(data) ? null : (data.data || data || {})
@@ -68,7 +68,7 @@ export default function Post() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [alertBanner, setAlertBanner] = useState(null)
 
-
+  // Comments state (kept at top-level so Hooks order is stable)
   const COMMENTS_PAGE_SIZE = 12
   const [comments, setComments] = useState([])
   const [commentsPage, setCommentsPage] = useState(0)
@@ -119,7 +119,7 @@ export default function Post() {
     setActionError('')
 
     const prev = { ...post }
-
+    // Optimistic update
     setPost((p) => {
       const liked = !p.isLiked
       return {
@@ -146,7 +146,7 @@ export default function Post() {
         throw new Error(parsed.message || 'Failed to like post')
       }
 
-
+      // Prefer server-returned counts when available
       const serverUpdate = parseCountsFromResponse(data)
       if (Object.keys(serverUpdate).length > 0) {
         setPost((p) => ({ ...p, ...serverUpdate }))
@@ -209,7 +209,7 @@ export default function Post() {
     }
   }
 
-
+  // Comments fetch/post logic (moved above early returns to ensure stable Hooks order)
   const fetchComments = async (page = 0) => {
     if (!post) return
     setCommentsLoading(true)
@@ -241,7 +241,7 @@ export default function Post() {
     }
   }
 
-
+  // Reset and fetch comments when post changes
   useEffect(() => {
     setComments([])
     setCommentsPage(0)
@@ -250,7 +250,7 @@ export default function Post() {
     if (post) fetchComments(0)
   }, [post])
 
-
+  // Listen for updates from other pages (Home optimistic updates etc.)
   useEffect(() => {
     const handler = (e) => {
       try {
@@ -289,7 +289,7 @@ export default function Post() {
   const handleDeleteSuccess = (payload) => {
     setShowDeleteModal(false)
     setAlertBanner({ status: 'success', message: payload?.message || 'Post deleted' })
-
+    // small delay then redirect to profile
     setTimeout(() => navigate('/profile', { replace: true }), 700)
   }
 
@@ -307,7 +307,7 @@ export default function Post() {
     const auth = tokenRaw ? (tokenRaw.toLowerCase().startsWith('bearer ') ? tokenRaw : `Bearer ${tokenRaw}`) : ''
     try { console.log('[Post] adding comment URL:', url, 'body:', body, 'authPresent:', !!auth) } catch (e) {}
 
-
+    // optimistic prepend
     const tmp = { id: `tmp-${Date.now()}`, comment: commentText, userId: uid, userName: userName, displayName: displayName || userName || 'You', commentAt: new Date().toISOString(), timeAgo: 'just now' }
     setComments((prev) => [ tmp, ...prev ])
     setCommentText('')
@@ -319,22 +319,22 @@ export default function Post() {
         const parsed = (await import('../lib/parseApiError.js')).parseApiErrorBody(data)
         throw new Error(parsed.message || 'Failed to add comment')
       }
-
+      // refresh first page to get authoritative data
       fetchComments(0)
 
-
+      // Prefer server counts when available
       const serverUpdate = parseCountsFromResponse(data)
       if (Object.keys(serverUpdate).length > 0) {
         setPost((p) => ({ ...p, ...{ commentCount: serverUpdate.commentCount ?? serverUpdate.comments } }))
         window.dispatchEvent(new CustomEvent('post:updated', { detail: { contentId: post.id, update: { comments: serverUpdate.commentCount ?? serverUpdate.comments } } }))
       } else {
-
+        // fallback to optimistic
         setPost((p) => ({ ...p, commentCount: Number(p.commentCount || 0) + 1 }))
         window.dispatchEvent(new CustomEvent('post:updated', { detail: { contentId: post.id, update: { comments: (post.commentCount || 0) + 1 } } }))
       }
     } catch (e) {
       console.error('add comment error', e)
-
+      // revert optimistic
       setComments((prev) => prev.filter((c) => c.id !== tmp.id))
       setCommentsError(e.message || 'Failed to post comment')
       setTimeout(() => setCommentsError(''), 5000)
@@ -415,13 +415,13 @@ export default function Post() {
               {actionError && <div className="mt-3"><AlertBanner status="error" message={actionError} /></div>}
               {alertBanner && <div className="mt-3"><AlertBanner status={alertBanner.status} message={alertBanner.message} /></div>}
 
-
+              {/* <div className="mt-4 text-sm text-slate-300/80">Content ID: <code className="text-xs px-1 py-[2px] rounded bg-white/5">{post.id}</code></div> */}
               <DeletePostModal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} onSuccess={handleDeleteSuccess} contentId={post.id} accent={accent} />
 
             </div>
           </div>
 
-
+          {/* Comments section */}
           <div className="mt-8 max-w-6xl mx-auto">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
               <h3 className="text-lg font-semibold text-white mb-3">Comments ({post.commentCount || 0})</h3>
