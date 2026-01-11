@@ -414,7 +414,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
             className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_20px_70px_rgba(0,0,0,0.4)] backdrop-blur-2xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 hover:shadow-lg hover:scale-[1.01] transition-transform"
             style={{ boxShadow: `0 20px 70px rgba(0,0,0,0.45), 0 0 32px ${accent.glow}` }}
           >
-            <div className="flex items-center gap-3 px-5 py-4" onClick={(e) => { e.stopPropagation(); if (post.authorId) navigate(`/friend-profile/${encodeURIComponent(post.authorId)}`) }}>
+            <div className="flex items-center gap-3 px-5 py-4" onClick={(e) => { e.stopPropagation(); if (post.authorId) window.location.href = `https://thatotakunetwork.netlify.app/friend-profile/${encodeURIComponent(post.authorId)}` }}>
               <div className="h-11 w-11 rounded-full border border-white/15 bg-white/10 flex items-center justify-center text-white/90" style={{ boxShadow: `0 10px 25px ${accent.glow}` }}>
                 <Sparkles className="h-5 w-5" />
               </div>

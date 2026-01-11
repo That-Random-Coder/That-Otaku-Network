@@ -141,7 +141,7 @@ function Groups() {
                     </div>
                   ) : (
                     groups.map((g) => (
-                      <div key={g.id} onClick={() => navigate(`/group/${g.id}`)} className="cursor-pointer rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl hover:shadow-[0_24px_70px_rgba(0,0,0,0.45)] transition">
+                      <div key={g.id} onClick={() => { window.location.href = `https://thatotakunetwork.netlify.app/group/${g.id}` }} className="cursor-pointer rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl hover:shadow-[0_24px_70px_rgba(0,0,0,0.45)] transition">
                         <div className="flex items-center justify-between gap-4">
                           <div className="flex items-center gap-4">
                             <div className="h-14 w-14 rounded-xl bg-white/8 flex items-center justify-center text-xl font-semibold text-white">{(g.name || '').slice(0,2)}</div>
@@ -172,7 +172,7 @@ function Groups() {
                   ) : (
                     <div className="space-y-3">
                       {groups.map((g) => (
-                        <div key={g.id} onClick={() => navigate(`/group/${g.id}`)} className="cursor-pointer rounded-2xl border border-white/10 bg-white/5 p-4 hover:bg-white/8 transition">
+                        <div key={g.id} onClick={() => { window.location.href = `https://thatotakunetwork.netlify.app/group/${g.id}` }} className="cursor-pointer rounded-2xl border border-white/10 bg-white/5 p-4 hover:bg-white/8 transition">
                           <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-xl bg-white/8 flex items-center justify-center text-sm font-semibold text-white">{(g.name || '').slice(0,2)}</div>
                             <div>

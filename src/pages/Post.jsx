@@ -367,7 +367,7 @@ export default function Post() {
             <div className="flex flex-col gap-4">
 <div
             className="flex items-center gap-3"
-            {...(ownerId ? { role: 'button', tabIndex: 0, onClick: () => navigate(`/friend-profile/${encodeURIComponent(ownerId)}`), onKeyDown: (e) => { if (e.key === 'Enter') navigate(`/friend-profile/${encodeURIComponent(ownerId)}`) } } : {})}
+            {...(ownerId ? { role: 'button', tabIndex: 0, onClick: () => { window.location.href = `https://thatotakunetwork.netlify.app/friend-profile/${encodeURIComponent(ownerId)}` }, onKeyDown: (e) => { if (e.key === 'Enter') { window.location.href = `https://thatotakunetwork.netlify.app/friend-profile/${encodeURIComponent(ownerId)}` } } } : {})}
           >
                 <div className="h-12 w-12 rounded-full bg-black/30 flex items-center justify-center overflow-hidden text-xl font-bold text-slate-200/70">
                   {post.displayName ? post.displayName.slice(0,2).toUpperCase() : (post.userName || 'OT').slice(0,2).toUpperCase()}

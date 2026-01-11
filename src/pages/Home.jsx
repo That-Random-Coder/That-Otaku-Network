@@ -871,7 +871,7 @@ function Home() {
               >
                 <div
                   className="flex items-center gap-3 px-5 py-4"
-                  {...(post.authorId ? { role: 'button', tabIndex: 0, onClick: () => navigate(`/friend-profile/${encodeURIComponent(post.authorId)}`), onKeyDown: (e) => { if (e.key === 'Enter') navigate(`/friend-profile/${encodeURIComponent(post.authorId)}`) } } : {})}
+                  {...(post.authorId ? { role: 'button', tabIndex: 0, onClick: () => { window.location.href = `https://thatotakunetwork.netlify.app/friend-profile/${encodeURIComponent(post.authorId)}` }, onKeyDown: (e) => { if (e.key === 'Enter') { window.location.href = `https://thatotakunetwork.netlify.app/friend-profile/${encodeURIComponent(post.authorId)}` } } } : {})}
                 >
                   <div className="h-11 w-11 rounded-full border border-white/15 bg-white/10 flex items-center justify-center text-white/90" style={{ boxShadow: `0 10px 25px ${accent.glow}` }}>
                     <Sparkles className="h-5 w-5" />
