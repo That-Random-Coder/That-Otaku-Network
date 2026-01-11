@@ -29,41 +29,10 @@ function NavigationBar({ accent, variant = 'mobile' }) {
   const userInitials = username.slice(0, 2).toUpperCase()
   const userId = getCookie('id') || getCookie('userId')
 
-  const clearSession = () => {
+  // use shared clearSession helper so mobile and desktop logout behave the same
+  const handleLogout = () => {
     if (loggingOut) return
-    setLoggingOut(true)
-    if (typeof document !== 'undefined') {
-      ;[
-        'AccessToken',
-        'accessToken',
-        'requestToken',
-        'request_token',
-        'RefreshToken',
-        'refreshToken',
-        'userId',
-        'id',
-        'username',
-        'friendId',
-        'sessionActive',
-        'profileCompleted',
-        'cookieConsent',
-      ].forEach((key) => {
-        document.cookie = `${key}=; path=/; max-age=0; SameSite=Lax`
-      })
-    }
-    if (typeof window !== 'undefined') {
-      ;[
-        'AccessToken',
-        'accessToken',
-        'requestToken',
-        'RefreshToken',
-        'sessionActive',
-        'userId',
-        'profileCompleted',
-        'username',
-      ].forEach((k) => localStorage.removeItem(k))
-    }
-    setTimeout(() => navigate('/authenticate', { replace: true, state: { fromLogout: true } }), 400)
+    import('../lib/session.js').then(({ clearSession }) => clearSession(navigate, setLoggingOut)).catch((e) => console.error(e))
   }
 
   const renderItem = (item) => {
@@ -158,7 +127,7 @@ function NavigationBar({ accent, variant = 'mobile' }) {
 
               <button
                 type="button"
-                onClick={clearSession}
+                onClick={handleLogout}
                 className={`${baseClasses} w-full justify-start border border-white/10 bg-white/5 text-slate-200/80 hover:text-white ${loggingOut ? 'opacity-70 cursor-not-allowed' : ''}`}
                 disabled={loggingOut}
               >

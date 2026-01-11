@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import accentOptions from '../theme/accentOptions.js'
 import { getSavedAccentKey, persistAccentKey } from '../theme/accentStorage.js'
@@ -53,6 +53,8 @@ function Profile() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showQRModal, setShowQRModal] = useState(false)
   const [alertBanner, setAlertBanner] = useState({ status: '', message: '' })
+  const [loggingOut, setLoggingOut] = useState(false)
+  const navigate = useNavigate()
 
   // Show accent-change loader when accent is changed (same tab or other tabs)
   useEffect(() => {
@@ -286,7 +288,14 @@ function Profile() {
             <div className="mt-3">
               <p className="text-xs text-slate-300/80">Your accent color will be used across all pages after login.</p>
               <button onClick={() => { setShowEditModal(true); setShowSettings(false) }} className="mt-3 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 transition md:hidden">Edit Profile</button>
+              <button onClick={() => { setShowSettings(false); import('../lib/session.js').then(({ clearSession }) => { clearSession(navigate, setLoggingOut) }).catch(e => console.error(e)) }} disabled={loggingOut} className={`mt-3 w-full rounded-xl border border-white/10 px-4 py-2 text-sm font-semibold transition ${loggingOut ? 'bg-white/10 text-slate-300/60 cursor-wait' : 'bg-white/5 text-white hover:bg-white/10'}`}>
+                {loggingOut ? 'Logging out...' : 'Logout'}
+              </button>
             </div>
+
+            <AnimatePresence mode="wait">
+              {loggingOut && <LoadingScreen key="logout-loader-mobile" accent={accent} message="Logging out" />}
+            </AnimatePresence>
           </div>
         )}
 
