@@ -22,13 +22,11 @@ const QRCodeShareModal = ({ isOpen, onClose, accent, motionSafe, targetId, targe
     const cookieUserId = getCookie('userId') || getCookie('id')
     const effectiveId = targetId || cookieUserId
     const basePath = targetType === 'group' ? '/group/' : '/friend-profile/'
-    const url = `https://thatotakunetwork.netlify.app${basePath}${encodeURIComponent(effectiveId || '')}`
+    const url = `http://localhost:5173${basePath}${encodeURIComponent(effectiveId || '')}`
 
     const color = accent?.mid || '#7c3aed'
 
-    // create a small SVG to embed text in the center of the QR
-    // Create a white SVG center with slate-colored text (larger) for contrast inside the QR
-    // Increase text size but keep overall QR size unchanged; use accent color for center text
+   
     const svgTextColor = accent?.mid || color
     const svg = `
       <svg xmlns='http://www.w3.org/2000/svg' width='420' height='140' viewBox='0 0 420 140'>
@@ -38,14 +36,14 @@ const QRCodeShareModal = ({ isOpen, onClose, accent, motionSafe, targetId, targe
 
     const svgDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
 
-    // Build gradient stops from the accent colors
+    
     const gradientStops = [
       { offset: 0, color: accent?.start || color },
       { offset: 0.5, color: accent?.mid || color },
       { offset: 1, color: accent?.end || color },
     ]
 
-    // create QR instance with white background and accent gradient for dots and accent-colored corners
+    
     qrInstanceRef.current = new QRCodeStyling({
       width: 380,
       height: 380,
@@ -77,18 +75,18 @@ const QRCodeShareModal = ({ isOpen, onClose, accent, motionSafe, targetId, targe
       },
     })
 
-    // append to the container
+
     if (qrRef.current) {
       qrRef.current.innerHTML = ''
       qrInstanceRef.current.append(qrRef.current)
     }
 
     return () => {
-      // cleanup
+
       if (qrRef.current) qrRef.current.innerHTML = ''
       qrInstanceRef.current = null
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [isOpen, accent])
 
   const handleDownload = async () => {

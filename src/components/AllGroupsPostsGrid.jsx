@@ -8,8 +8,6 @@ const getCookie = (name) => {
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
   return match ? decodeURIComponent(match[1]) : ''
 }
-
-// Simple accent-aware spinner
 const Spinner = ({ size = 40, accent = {} }) => (
   <div style={{ width: size, height: size }} className="flex items-center justify-center">
     <svg viewBox="0 0 50 50" className="animate-spin" style={{ width: size, height: size }}>
@@ -38,7 +36,6 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // reset when user changes
     setPosts([])
     setPage(0)
     setHasMore(true)
@@ -52,7 +49,6 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
       setError('')
       try {
         const url = `${import.meta.env.VITE_API_BASE_URL}content/content/recommendation/all-groups-members?userId=${encodeURIComponent(userId || '')}&page=${p}&size=${BATCH_SIZE}`
-        // Use AccessToken cookie explicitly as Bearer token
         const tokenRaw = getCookie('AccessToken') || ''
         const auth = tokenRaw ? (tokenRaw.toLowerCase().startsWith('bearer ') ? tokenRaw : `Bearer ${tokenRaw}`) : ''
         const headers = auth ? { Authorization: auth, AccessToken: tokenRaw } : {}
@@ -65,7 +61,6 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
           throw new Error(parsed.message || 'Failed to fetch posts')
         }
         const arr = Array.isArray(body?.content) ? body.content : []
-        // map to the same post shape used by Home
         const mapFeedItem = (it) => ({
           id: it.contentId || it.id || String(Math.random()).slice(2),
           authorId: it.userId || it.userID || it.ownerId || it.creatorId || (it.user && it.user.id) || '',
@@ -120,7 +115,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
     return () => obs.disconnect()
   }, [sentinelRef.current, loading, hasMore, posts, page])
 
-  // Helpers copied from Home to match post shape and reactions UI
+  
   const getBearerToken = () => {
     const raw = getCookie('AccessToken') || getCookie('accessToken') || (typeof localStorage !== 'undefined' ? localStorage.getItem('AccessToken') || localStorage.getItem('accessToken') : '') || ''
     const trimmed = raw.trim()
@@ -169,7 +164,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
     return ''
   }
 
-  // Optimistic reaction handler (likes, dislikes, isFaved)
+  
   const pendingReactions = new Set()
   const toggleReaction = async (id, key) => {
     if (pendingReactions.has(`${id}:${key}`)) return
@@ -230,7 +225,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
     }
   }
 
-  // Share handler
+  
   const handleShare = async (id) => {
     const url = `${window.location.origin}/post/${id}`
     try {
@@ -269,7 +264,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
     }
   }
 
-  // RemoteMedia: fetch remote http(s) media, convert data: and base64 payloads to Blobs and use object URLs to avoid embedding huge data URIs in the DOM
+  
   const RemoteMedia = ({ src, mediaType = '' }) => {
     const [objUrl, setObjUrl] = useState(null)
     const [loaded, setLoaded] = useState(false)
@@ -315,17 +310,17 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
 
       (async () => {
         try {
-          // blob: URLs can be used directly
+          
           if (src.startsWith('blob:')) { if (!canceled) setObjUrl(src); return }
 
-          // data: URIs -> convert to object URL to avoid embedding huge strings in DOM
+          
           if (src.startsWith('data:')) {
             const url = await dataUriToObjectUrl(src)
             if (url && !canceled) { createdObjectUrl = url; setObjUrl(url) }
             return
           }
 
-          // http(s) -> fetch with Authorization-only header
+          
           if (src.startsWith('http://') || src.startsWith('https://')) {
             const tokenRaw = getCookie('AccessToken') || ''
             const auth = tokenRaw ? (tokenRaw.toLowerCase().startsWith('bearer ') ? tokenRaw : `Bearer ${tokenRaw}`) : ''
@@ -338,7 +333,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
             return
           }
 
-          // Likely raw base64 payload (no data: prefix)
+          
           if (isLikelyBase64(src)) {
             const mime = (mediaType && mediaType.includes('/')) ? mediaType : 'image/jpeg'
             const url = base64ToObjectUrl(src, mime)
@@ -346,7 +341,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
             return
           }
 
-          // Fallback: treat as direct URL/path
+          
           if (!canceled) setObjUrl(src)
         } catch (e) {
           console.warn('[RemoteMedia] failed to resolve src', src, e)
@@ -371,7 +366,6 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
     )
   }
 
-  // Render like Home: article cards
   const PostMedia = ({ item }) => {
     const media = item.media || item.image || ''
     let chosen = ''
@@ -414,7 +408,7 @@ export default function AllGroupsPostsGrid({ userIdProp, accent = {} }) {
             className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_20px_70px_rgba(0,0,0,0.4)] backdrop-blur-2xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 hover:shadow-lg hover:scale-[1.01] transition-transform"
             style={{ boxShadow: `0 20px 70px rgba(0,0,0,0.45), 0 0 32px ${accent.glow}` }}
           >
-            <div className="flex items-center gap-3 px-5 py-4" onClick={(e) => { e.stopPropagation(); if (post.authorId) window.location.href = `https://thatotakunetwork.netlify.app/friend-profile/${encodeURIComponent(post.authorId)}` }}>
+            <div className="flex items-center gap-3 px-5 py-4" onClick={(e) => { e.stopPropagation(); if (post.authorId) window.location.href = `http://localhost:5173/friend-profile/${encodeURIComponent(post.authorId)}` }}>
               <div className="h-11 w-11 rounded-full border border-white/15 bg-white/10 flex items-center justify-center text-white/90" style={{ boxShadow: `0 10px 25px ${accent.glow}` }}>
                 <Sparkles className="h-5 w-5" />
               </div>

@@ -169,7 +169,7 @@ const EditProfileModal = ({ isOpen, onClose, onSave, initial = {}, accent, motio
   const [location, setLocation] = useState(initial.location || '')
   const [dateOfBirth, setDateOfBirth] = useState(initial.dateOfBirth || '')
   const todayIso = new Date().toISOString().split('T')[0]
-  // Discord-style DOB parts
+  
   const [dobY, setDobY] = useState(initial.dateOfBirth ? String(initial.dateOfBirth).split('-')[0] : '')
   const [dobM, setDobM] = useState(initial.dateOfBirth ? String(initial.dateOfBirth).split('-')[1] : '')
   const [dobD, setDobD] = useState(initial.dateOfBirth ? String(initial.dateOfBirth).split('-')[2] : '')
@@ -188,7 +188,7 @@ const EditProfileModal = ({ isOpen, onClose, onSave, initial = {}, accent, motio
     setDobD(initial.dateOfBirth ? String(initial.dateOfBirth).split('-')[2] : '')
   }, [isOpen, initial])
 
-  // helper to set date parts and keep ISO in sync
+  
   const setDobParts = (y, m, d) => {
     setDobY(y || '')
     setDobM(m || '')

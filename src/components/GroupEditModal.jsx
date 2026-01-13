@@ -18,7 +18,7 @@ const GroupEditModal = ({ isOpen, onClose, onUpdated, profile = {}, accent, moti
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
 
-  // Access token helper: prefer cookie, fallback to localStorage
+  
   const getAccessToken = () => {
     let token = getCookie('AccessToken') || ''
     try { if (!token) token = localStorage.getItem('AccessToken') || '' } catch (e) {}
@@ -62,13 +62,13 @@ const GroupEditModal = ({ isOpen, onClose, onUpdated, profile = {}, accent, moti
 
       const successMsg = bodyRes?.message || 'Images updated successfully'
       setSuccessMessage(successMsg)
-      // show success briefly
+      
       setTimeout(() => setSuccessMessage(''), 3000)
 
       try { if (onUpdated) onUpdated(bodyRes?.data || bodyRes || {}) } catch (e) {}
       setProfileFile(null)
       setBgFile(null)
-      // Automatically reload the page after a short delay so updated images are fetched and rendered
+      
       setTimeout(() => { try { window.location.reload() } catch (e) {} }, 900)
     } catch (err) {
       console.error('uploadImages error', err)

@@ -31,7 +31,7 @@ function Profile() {
   const [showAccentLoader, setShowAccentLoader] = useState(false)
   const [pendingAccent, setPendingAccent] = useState(null)
 
-  // Persist accentKey changes
+  
   useEffect(() => {
     persistAccentKey(accentKey)
   }, [accentKey])
@@ -40,14 +40,14 @@ function Profile() {
   const loaderTimerRef = useRef(null)
   const topLoaderRef = useRef(null)
 
-  // motion preference helper (match other pages)
+  
   const usePrefersReducedMotion = () => {
     if (typeof window === 'undefined') return false
     return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   }
   const motionSafe = !usePrefersReducedMotion()
 
-  // follower/following modal state
+  
   const [showFollowersModal, setShowFollowersModal] = useState(false)
   const [showFollowingModal, setShowFollowingModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -56,7 +56,7 @@ function Profile() {
   const [loggingOut, setLoggingOut] = useState(false)
   const navigate = useNavigate()
 
-  // Show accent-change loader when accent is changed (same tab or other tabs)
+  
   useEffect(() => {
     let timer = null
     const startLoader = () => {
@@ -81,16 +81,16 @@ function Profile() {
     }
   }, [])
 
-  // Edit profile save handler — parent will perform API call and show top loader
+  
   const handleEditSave = async (payload) => {
     const uid = getCookie('userId') || getCookie('id')
     if (!uid) {
-      // you are not logged in
+      
       return
     }
 
     try {
-      // start top loader
+      
       topLoaderRef.current?.continuousStart()
 
       const tokenRaw = getCookie('AccessToken') || localStorage.getItem('AccessToken') || ''
@@ -113,19 +113,19 @@ function Profile() {
 
       const data = await res.json().catch(() => ({}))
 
-      // complete loader
+      
       topLoaderRef.current?.complete()
 
-      // update profile locally
+      
       setProfile((prev) => prev ? ({ ...prev, ...payload }) : prev)
 
-      // persist displayName cookie if changed
+      
       try { if (payload?.displayName) document.cookie = `displayName=${encodeURIComponent(String(payload.displayName))}; path=/; max-age=604800; SameSite=Lax` } catch (e) {}
 
-      // close modal
+      
       setShowEditModal(false)
 
-      // success banner
+      
       try { setAlertBanner({ status: 'success', message: 'Profile updated Successfully' }); setTimeout(() => setAlertBanner({ status: '', message: '' }), 5000) } catch (e) {}
     } catch (e) {
       topLoaderRef.current?.complete()
@@ -135,7 +135,7 @@ function Profile() {
 
   const handleAccentSelect = (key) => {
     if (key === accentKey) return
-    // If already pending for same key, ignore
+    
     if (pendingTimerRef.current) {
       clearTimeout(pendingTimerRef.current)
       pendingTimerRef.current = null
@@ -144,12 +144,12 @@ function Profile() {
     console.debug('[profile] accent select clicked', key, Date.now())
     setPendingAccent(key)
 
-    // show loader immediately (independent from persist timing)
+    
     setShowAccentLoader(true)
     if (loaderTimerRef.current) clearTimeout(loaderTimerRef.current)
     loaderTimerRef.current = setTimeout(() => setShowAccentLoader(false), 2000)
 
-    // delay the actual accent change by 0.5 seconds
+    
     pendingTimerRef.current = setTimeout(() => {
       console.debug('[profile] applying accent', key, Date.now())
       setAccentKey(key)
@@ -200,12 +200,12 @@ function Profile() {
           profileImg: p.profileImg ? `data:image/jpeg;base64,${p.profileImg}` : '',
           isVerified: !!p.isVerified,
         })
-        // Persist displayName cookie so it's available to other pages/components
+        
         try { const dn = p.displayName || ''; if (dn) document.cookie = `displayName=${encodeURIComponent(String(dn))}; path=/; max-age=604800; SameSite=Lax` } catch (e) {}
       })
       .catch((err) => setError(err.message || 'Failed to fetch profile.'))
       .finally(() => setLoading(false))
-    // --- end of useEffect
+    
   }, [accentKey])
 
   const cookieUserId = getCookie('id') || getCookie('userId') || ''

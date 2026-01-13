@@ -14,7 +14,7 @@ const CATEGORIES = [
   'MEME','FUNNY','DISCUSSION','QUESTION','OPINION','REVIEW','ANALYSIS','NEWS','CLIP','FAN_ART','EDIT','COSPLAY','SLICE_OF_LIFE','STORY','ROMANCE','ECCHI','META'
 ]
 
-// Maximum selections for genres and categories
+
 const MAX_SELECT = 5
 
 const getCookie = (name) => {
@@ -47,7 +47,7 @@ function Create() {
   const fileRef = useRef(null)
 
   useEffect(() => {
-    // cleanup preview URL on unmount
+    
     return () => {
       if (filePreview && filePreview.startsWith('blob:')) URL.revokeObjectURL(filePreview)
     }
@@ -59,7 +59,7 @@ function Create() {
     else setArr(arr.filter((v) => v !== val))
   }
 
-  // Toggle but prevent adding more than MAX_SELECT items
+  
   const toggleLimited = (arr, setArr, val) => {
     if (!arr.includes(val) && arr.length >= MAX_SELECT) return
     toggle(arr, setArr, val)
@@ -69,7 +69,7 @@ function Create() {
 
   const sanitizeTagForSend = (t) => {
     if (!t) return ''
-    // remove leading '#', trim, replace spaces with underscores
+  
     const cleaned = String(t).replace(/^#+/, '').trim().replace(/\s+/g, '_')
     return cleaned
   }
@@ -98,12 +98,12 @@ function Create() {
     const url = URL.createObjectURL(f)
     setFilePreview(url)
 
-    // convert to base64 string for 'media' field
+    
     try {
       const reader = new FileReader()
       reader.onload = () => {
         const result = reader.result
-        // result is Data URL; send as-is
+        
         setMediaString(result)
       }
       reader.readAsDataURL(f)
@@ -119,7 +119,7 @@ function Create() {
     setError('')
     setSuccess('')
 
-    // Build payload immediately and show it regardless of validation outcome
+    
     const userID = getCookie('userId') || getCookie('id') || ''
     const userName = getCookie('username') || (typeof localStorage !== 'undefined' ? localStorage.getItem('username') || '' : '') || ''
     const displayName = getCookie('displayName') || (typeof localStorage !== 'undefined' ? localStorage.getItem('displayName') || localStorage.getItem('displayname') : '') || getCookie('displayname') || userName || getCookie('name') || ''
@@ -147,21 +147,21 @@ function Create() {
       const auth = tokenRaw ? (tokenRaw.toLowerCase().startsWith('bearer ') ? tokenRaw : `Bearer ${tokenRaw}`) : ''
 
       const formData = new FormData()
-      // include request payload as JSON under both keys for backend compatibility
+      
       const requestBlob = new Blob([JSON.stringify(payload.request)], { type: 'application/json' })
       formData.append('requestDto', requestBlob)
       formData.append('request', requestBlob)
 
-      // If a file is present, append it as media/file
+      
       if (file) {
         formData.append('media', file)
         formData.append('file', file)
       } else if (mediaString) {
-        // if only base64 string exists, send as media string field
+        
         formData.append('media', mediaString)
       }
 
-      // Debug: list FormData keys and file names
+      
       try {
         const keys = []
         for (const k of formData.keys()) keys.push(k)

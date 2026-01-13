@@ -110,7 +110,7 @@ Steps:
    npm run dev
    ```
 
-   5. Open https://thatotakunetwork.netlify.app (or the URL Vite prints) and explore.
+   5. Open http://localhost:5173 (or the URL Vite prints) and explore.
 
   ```bash
   npm run build

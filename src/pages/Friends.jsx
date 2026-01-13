@@ -50,7 +50,7 @@ function Friends() {
       return () => controller.abort()
     }
 
-    // Debounce: wait 1 second after the last change before firing the fetch
+
     setIsWaiting(true)
     const timer = setTimeout(() => {
       setIsWaiting(false)
@@ -183,8 +183,9 @@ function Friends() {
                     className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:border-white/20 hover:bg-white/8 cursor-pointer"
                     style={{ boxShadow: `0 10px 28px rgba(0,0,0,0.35), 0 0 16px ${accent.glow}` }}
                     onClick={() => {
-                      window.location.href = `https://thatotakunetwork.netlify.app/friend-profile/${encodeURIComponent(user.id)}`
+                      window.location.href = `http://localhost:5173/friend-profile/${encodeURIComponent(user.id)}`
                     }}
+
                   >
                     <div className="flex items-center gap-3">
                       <div className="h-12 w-12 overflow-hidden rounded-full border border-white/15 bg-black/40 flex items-center justify-center text-white/80">
@@ -211,7 +212,8 @@ function Friends() {
                     key={group.id}
                     className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:border-white/20 hover:bg-white/8 cursor-pointer"
                     style={{ boxShadow: `0 10px 28px rgba(0,0,0,0.35), 0 0 16px ${accent.glow}` }}
-                    onClick={() => { window.location.href = `https://thatotakunetwork.netlify.app/group/${encodeURIComponent(group.id)}` }}
+                    onClick={() => { window.location.href = `http://localhost:5173/group/${encodeURIComponent(group.id)}` }}
+
                   >
                     <div className="flex items-center gap-3">
                       <div className="h-12 w-12 overflow-hidden rounded-xl border border-white/15 bg-black/40 flex items-center justify-center text-white/80">

@@ -52,7 +52,7 @@ const getBearerToken = () => {
   return trimmed.toLowerCase().startsWith('bearer ') ? trimmed : `Bearer ${trimmed}`
 }
 
-// Custom styles for react-select to match the dark theme
+
 const selectStyles = (accent) => ({
   control: (base, state) => ({
     ...base,
@@ -85,7 +85,7 @@ const selectStyles = (accent) => ({
   dropdownIndicator: (base) => ({ ...base, color: 'rgba(255,255,255,0.5)' }),
 })
 
-// Location Picker Modal
+
 const LocationPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe }) => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [selectedState, setSelectedState] = useState(null)
@@ -212,7 +212,6 @@ const LocationPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe }) 
   )
 }
 
-// Character Picker Modal (80% of screen)
 const CharacterPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe }) => {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
@@ -221,7 +220,7 @@ const CharacterPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe })
   const [error, setError] = useState('')
   const [selected, setSelected] = useState(null)
 
-  // Fetch featured characters on mount
+  
   useEffect(() => {
     if (!isOpen) return
     const fetchFeatured = async () => {
@@ -236,14 +235,14 @@ const CharacterPickerModal = ({ isOpen, onClose, onSelect, accent, motionSafe })
         setFeatured(data.data?.map(c => ({ id: c.mal_id, name: c.name, imageUrl: c.images?.jpg?.image_url })) || [])
       } catch (err) {
         setFeatured([])
-        // set a small error message for the modal context
+        
         setError(err?.message || 'Failed to fetch featured characters')
       }
     }
     fetchFeatured()
   }, [isOpen])
 
-  // Search characters
+  
   useEffect(() => {
     if (!query.trim()) { setResults([]); return }
     const controller = new AbortController()
@@ -469,14 +468,14 @@ function ProfileSetup() {
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  // Local DOB parts for flexible selection order
+  
   const [dobY, setDobY] = useState('')
   const [dobM, setDobM] = useState('')
   const [dobD, setDobD] = useState('')
   const [dobFocus, setDobFocus] = useState({ day: false, month: false, year: false })
 
   useEffect(() => {
-    // If form.dateOfBirth is populated externally, sync to local parts
+    
     if (form.dateOfBirth) {
       const [y, m, d] = String(form.dateOfBirth).split('-')
       setDobY(y || '')
@@ -485,10 +484,10 @@ function ProfileSetup() {
     }
   }, [form.dateOfBirth])
 
-  // Helper to set date parts and validate against today
+  
   const setDobParts = (y, m, d) => {
     if (!y || !m || !d) {
-      // partial selection: store parts but clear final value
+      
       setForm((prev) => ({ ...prev, dateOfBirth: '' }))
       setFieldErrors((prev) => ({ ...prev, dateOfBirth: '' }))
       setDobY(y || '')
@@ -496,11 +495,11 @@ function ProfileSetup() {
       setDobD(d || '')
       return
     }
-    // normalize ints
+  
     const yy = parseInt(String(y), 10)
     const mm = parseInt(String(m), 10)
     let dd = parseInt(String(d), 10)
-    // clamp day to month length
+    
     const daysInMonth = new Date(yy, mm, 0).getDate()
     if (dd > daysInMonth) dd = daysInMonth
     const ddStr = String(dd).padStart(2, '0')
@@ -508,9 +507,9 @@ function ProfileSetup() {
     const iso = `${String(yy)}-${mmStr}-${ddStr}`
     if (iso > todayIso) {
       setFieldErrors((prev) => ({ ...prev, dateOfBirth: 'Date of birth cannot be in the future' }))
-      // clamp to today
+      
       setForm((prev) => ({ ...prev, dateOfBirth: todayIso }))
-      // sync parts to today
+      
       const [ty, tm, td] = todayIso.split('-')
       setDobY(ty); setDobM(tm); setDobD(td)
     } else {
@@ -550,7 +549,7 @@ function ProfileSetup() {
       return
     }
 
-    // Client-side required validation
+    
     const errs = {}
     if (!String(form.displayName || '').trim()) errs.displayName = 'Display name is required.'
     else if (String(form.displayName || '').trim().length < 6 || String(form.displayName || '').trim().length > 50) errs.displayName = 'Display name length must be between 6 and 50 characters'
@@ -608,9 +607,9 @@ function ProfileSetup() {
 
       setApiStatus('success')
       setApiMessage('Profile created successfully! Proceeding to preferences...')
-      // Set displayName cookie so it's available across the app
+      
       try { const d = String(form.displayName?.trim() || ''); if (d) document.cookie = `displayName=${encodeURIComponent(d)}; path=/; max-age=604800; SameSite=Lax` } catch(e) {}
-      // Redirect to preferences step instead of marking profile completed & going home
+      
       setTimeout(() => navigate('/preferences', { replace: true }), 900)
     } catch (err) {
       const body = err?.response?.data

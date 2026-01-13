@@ -12,7 +12,7 @@ const navItems = [
   { key: 'profile', label: 'Profile', to: '/profile', icon: UserRound, showInMobile: true, showInDesktop: false },
 ]
 
-// Helper to read cookie (used to build profile link dynamically)
+
 const getCookie = (name) => {
   if (typeof document === 'undefined') return ''
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
@@ -29,7 +29,7 @@ function NavigationBar({ accent, variant = 'mobile' }) {
   const userInitials = username.slice(0, 2).toUpperCase()
   const userId = getCookie('id') || getCookie('userId')
 
-  // use shared clearSession helper so mobile and desktop logout behave the same
+  
   const handleLogout = () => {
     if (loggingOut) return
     import('../lib/session.js').then(({ clearSession }) => clearSession(navigate, setLoggingOut)).catch((e) => console.error(e))
@@ -48,7 +48,7 @@ function NavigationBar({ accent, variant = 'mobile' }) {
       borderColor: 'rgba(255,255,255,0.18)',
     }
 
-    // Hide non-mobile items on mobile variant
+    
   if (variant === 'mobile' && item.showInMobile === false) return null
 
   return (
@@ -68,7 +68,7 @@ function NavigationBar({ accent, variant = 'mobile' }) {
   }
 
   if (variant === 'inline') {
-    // Desktop sidebar: fixed left column + inline spacer to push page content
+    
     return (
       <>
         <aside className="hidden md:flex md:flex-col md:sticky md:top-6 md:self-start md:w-64 md:pt-6 md:pb-4 md:px-4 md:gap-4 md:h-[calc(100vh-4rem)] md:overflow-auto z-30">
