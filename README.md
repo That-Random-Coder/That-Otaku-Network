@@ -192,12 +192,4 @@ Contributions are welcome. A simple flow:
 
 Please run the dev server to confirm the UI before requesting a review.
 
----
-
-## ⚖️ License
-
-This project is provided without an attached license in the repo. Add a `LICENSE` file (MIT is a common choice) to make reuse terms explicit.
-
----
-
-If you'd like, I can add a short `CONTRIBUTING.md`, a basic issue template, and a GitHub Action to automatically build deploy previews. Want me to add those next? 
+--- 
